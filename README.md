@@ -9,15 +9,21 @@ Each engine ships as its own package so you only install what you use.
 
 ## Engines
 
-| Track  | Engines                                                                                       |
-| ------ | --------------------------------------------------------------------------------------------- |
-| SQL    | postgres ✓, sqlite ✓, mysql, sqlserver, oracle, bigquery, snowflake, redshift, databricks, clickhouse |
-| NoSQL  | cassandra, elasticsearch, mongodb, dynamodb                                                   |
-| Graph  | neo4j, neptune, arangodb, memgraph                                                            |
-| Vector | pgvector, pinecone, weaviate, qdrant, chroma, milvus                                          |
+| Track  | Engines                                                                                                |
+| ------ | ------------------------------------------------------------------------------------------------------ |
+| SQL    | postgres ✓, sqlite ✓, mysql ✓, clickhouse ✓, sqlserver ✓, oracle ✓, bigquery ✓, snowflake ✓, redshift ✓, databricks ✓ |
+| NoSQL  | mongodb ✓, dynamodb ✓, elasticsearch ✓, cassandra ✓                                                    |
+| Graph  | neo4j ✓, memgraph ✓, arangodb ✓, neptune ✓                                                             |
+| Vector | pgvector ✓, pinecone ✓, weaviate ✓, qdrant ✓, chroma ✓, milvus ✓                                       |
 
-✓ = full implementation. The rest are stubs raising `NotImplementedError` —
-PRs welcome (see `CONTRIBUTING.md`).
+✓ = full implementation.
+
+For SQL engines, `query` accepts SQL and is guarded by a sqlglot parser
+that walks the full AST. For non-SQL engines (NoSQL, graph, vector), the
+`query` tool accepts the engine's native form: a JSON spec for document
+and vector stores; raw Cypher / CQL / AQL / Gremlin for graph engines
+(with a write-keyword guard). See each connector's module docstring for
+the exact format.
 
 ## Tool surface
 
@@ -66,6 +72,35 @@ uv sync
 export CONNECTPAK_SQLITE_PATH="/path/to/db.sqlite"
 uv run connectpak-sql-sqlite
 ```
+
+### MySQL
+
+```bash
+uv sync
+export CONNECTPAK_MYSQL_DSN="mysql://user:pass@localhost:3306/mydb"
+uv run connectpak-sql-mysql
+```
+
+### ClickHouse
+
+```bash
+uv sync
+export CONNECTPAK_CLICKHOUSE_DSN="clickhouse://default:@localhost:8123/default"
+uv run connectpak-sql-clickhouse
+```
+
+### pgvector
+
+```bash
+uv sync
+export CONNECTPAK_PGVECTOR_DSN="postgresql://user:pass@localhost:5432/mydb"
+uv run connectpak-vector-pgvector
+```
+
+For the other engines, see each package's `README.md` and connector module
+docstring for the accepted config / DSN format. The CLI is the same shape:
+`uv run connectpak-<track>-<engine>` reading from the matching
+`CONNECTPAK_<ENGINE>_*` env var.
 
 Wire the resulting MCP server into your client of choice.
 

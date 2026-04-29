@@ -11,16 +11,17 @@ ROOT = Path(__file__).resolve().parent.parent
 PACKAGES = ROOT / "packages"
 
 # (track, engine, dep_pkg, display, dialect)
+# NOTE: packages with full implementations are excluded — re-running this
+# script will not overwrite them. Currently full: postgres, sqlite, mysql,
+# clickhouse, pgvector.
 STUBS: list[tuple[str, str, str, str, str | None]] = [
-    # SQL (8 stubs)
-    ("sql", "mysql", "PyMySQL>=1.1", "MySQL", "mysql"),
+    # SQL (6 stubs)
     ("sql", "sqlserver", "pymssql>=2.3", "SQL Server", "tsql"),
     ("sql", "oracle", "oracledb>=2.0", "Oracle", "oracle"),
     ("sql", "bigquery", "google-cloud-bigquery>=3.20", "BigQuery", "bigquery"),
     ("sql", "snowflake", "snowflake-connector-python>=3.7", "Snowflake", "snowflake"),
     ("sql", "redshift", "redshift-connector>=2.1", "Redshift", "redshift"),
     ("sql", "databricks", "databricks-sql-connector>=3.1", "Databricks", "databricks"),
-    ("sql", "clickhouse", "clickhouse-connect>=0.7", "ClickHouse", "clickhouse"),
     # NoSQL (4)
     ("nosql", "cassandra", "cassandra-driver>=3.29", "Cassandra", None),
     ("nosql", "elasticsearch", "elasticsearch>=8.13", "Elasticsearch", None),
@@ -31,8 +32,7 @@ STUBS: list[tuple[str, str, str, str, str | None]] = [
     ("graph", "neptune", "boto3>=1.34", "Neptune", None),
     ("graph", "arangodb", "python-arango>=8.0", "ArangoDB", None),
     ("graph", "memgraph", "neo4j>=5.20", "Memgraph", None),
-    # Vector (6)
-    ("vector", "pgvector", "psycopg[binary]>=3.1", "pgvector", None),
+    # Vector (5)
     ("vector", "pinecone", "pinecone-client>=4.0", "Pinecone", None),
     ("vector", "weaviate", "weaviate-client>=4.6", "Weaviate", None),
     ("vector", "qdrant", "qdrant-client>=1.9", "Qdrant", None),

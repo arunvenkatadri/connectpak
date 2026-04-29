@@ -1,39 +1,45 @@
-"""pgvector connector — stub.
+"""pgvector connector — Postgres + vector-aware describe_table.
 
-Every method raises NotImplementedError. Implement against the contract
-defined in `connectpak.core.base.BaseConnector` and keep the safety
-contract intact: parser guard + engine-level read-only + statement timeout
-+ row cap.
+Inherits the full Postgres implementation from connectpak-sql-postgres and
+overrides `_fetch_columns` to report the real `vector(N)` type for vector
+columns (information_schema.columns reports them as 'USER-DEFINED' which
+hides the dimension).
 """
 
 from __future__ import annotations
 
-from connectpak.core.base import BaseConnector, QueryResult, TableSchema
+from connectpak.core.base import Column
+from connectpak.sql.postgres.connector import PostgresConnector
 
 
-class PgvectorConnector(BaseConnector):
+class PgvectorConnector(PostgresConnector):
     name = "pgvector"
-    dialect = None
 
-    def list_schemas(self) -> list[str]:
-        raise NotImplementedError("pgvector connector is not yet implemented")
-
-    def list_tables(self, schema: str | None = None) -> list[tuple[str | None, str]]:
-        raise NotImplementedError("pgvector connector is not yet implemented")
-
-    def describe_table(self, name: str, schema: str | None = None) -> TableSchema:
-        raise NotImplementedError("pgvector connector is not yet implemented")
-
-    def sample_table(
-        self, name: str, schema: str | None = None, limit: int = 10
-    ) -> QueryResult:
-        raise NotImplementedError("pgvector connector is not yet implemented")
-
-    def query(self, sql: str, max_rows: int | None = None) -> QueryResult:
-        raise NotImplementedError("pgvector connector is not yet implemented")
-
-    def explain(self, sql: str) -> str:
-        raise NotImplementedError("pgvector connector is not yet implemented")
-
-    def close(self) -> None:
-        return None
+    def _fetch_columns(self, schema: str, table: str) -> list[Column]:
+        sql = """
+            SELECT
+              a.attname,
+              format_type(a.atttypid, a.atttypmod) AS data_type,
+              NOT a.attnotnull AS nullable,
+              pg_get_expr(d.adbin, d.adrelid) AS column_default,
+              col_description(c.oid, a.attnum) AS comment
+            FROM pg_attribute a
+            JOIN pg_class c ON c.oid = a.attrelid
+            JOIN pg_namespace n ON n.oid = c.relnamespace
+            LEFT JOIN pg_attrdef d ON d.adrelid = a.attrelid AND d.adnum = a.attnum
+            WHERE n.nspname = %s AND c.relname = %s
+              AND a.attnum > 0 AND NOT a.attisdropped
+            ORDER BY a.attnum
+        """
+        with self._connection().cursor() as cur:
+            cur.execute(sql, (schema, table))
+            return [
+                Column(
+                    name=r[0],
+                    type=r[1],
+                    nullable=bool(r[2]),
+                    default=r[3],
+                    comment=r[4],
+                )
+                for r in cur.fetchall()
+            ]

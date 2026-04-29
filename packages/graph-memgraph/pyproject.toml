@@ -1,12 +1,13 @@
 [project]
 name = "connectpak-graph-memgraph"
 version = "0.1.0"
-description = "Memgraph connector for connectpak (stub — not yet implemented)."
+description = "Memgraph connector for connectpak."
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "MIT" }
 dependencies = [
     "connectpak-core",
+    "connectpak-graph-neo4j",
     "neo4j>=5.20",
 ]
 

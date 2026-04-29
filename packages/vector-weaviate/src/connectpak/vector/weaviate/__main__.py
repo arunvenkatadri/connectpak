@@ -1,16 +1,40 @@
-"""CLI entry point for the Weaviate connector (stub)."""
+"""CLI entry point for the Weaviate connector."""
 
 from __future__ import annotations
 
+import argparse
+import os
 import sys
+
+from connectpak.core.server import serve
+from connectpak.vector.weaviate.connector import WeaviateConnector
 
 
 def main() -> int:
-    print(
-        "connectpak-vector-weaviate: stub — not yet implemented",
-        file=sys.stderr,
+    parser = argparse.ArgumentParser(prog="connectpak-vector-weaviate")
+    parser.add_argument(
+        "--config",
+        default=os.environ.get("CONNECTPAK_WEAVIATE_URL"),
+        help="Weaviate connection config (default: $CONNECTPAK_WEAVIATE_URL). "
+             "See the connector's docstring for accepted formats.",
     )
-    return 2
+    parser.add_argument("--allow-write", action="store_true")
+    parser.add_argument("--statement-timeout-ms", type=int, default=30_000)
+    parser.add_argument("--max-rows", type=int, default=1000)
+    args = parser.parse_args()
+    if not args.config:
+        print(
+            "error: --config is required (or set $CONNECTPAK_WEAVIATE_URL)",
+            file=sys.stderr,
+        )
+        return 2
+    serve(WeaviateConnector(
+        config=args.config,
+        allow_write=args.allow_write,
+        statement_timeout_ms=args.statement_timeout_ms,
+        default_max_rows=args.max_rows,
+    ))
+    return 0
 
 
 if __name__ == "__main__":

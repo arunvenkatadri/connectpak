@@ -1,12 +1,13 @@
 [project]
 name = "connectpak-vector-pgvector"
 version = "0.1.0"
-description = "pgvector connector for connectpak (stub — not yet implemented)."
+description = "pgvector connector for connectpak."
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "MIT" }
 dependencies = [
     "connectpak-core",
+    "connectpak-sql-postgres",
     "psycopg[binary]>=3.1",
 ]
 

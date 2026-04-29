@@ -44,12 +44,34 @@ dev = [
     "connectpak-core",
     "connectpak-sql-postgres",
     "connectpak-sql-sqlite",
+    "connectpak-sql-mysql",
+    "connectpak-sql-clickhouse",
+    "connectpak-sql-sqlserver",
+    "connectpak-sql-oracle",
+    "connectpak-sql-bigquery",
+    "connectpak-sql-snowflake",
+    "connectpak-sql-redshift",
+    "connectpak-sql-databricks",
+    "connectpak-nosql-mongodb",
+    "connectpak-nosql-dynamodb",
+    "connectpak-nosql-elasticsearch",
+    "connectpak-nosql-cassandra",
+    "connectpak-graph-neo4j",
+    "connectpak-graph-memgraph",
+    "connectpak-graph-arangodb",
+    "connectpak-graph-neptune",
+    "connectpak-vector-pgvector",
+    "connectpak-vector-pinecone",
+    "connectpak-vector-weaviate",
+    "connectpak-vector-qdrant",
+    "connectpak-vector-chroma",
+    "connectpak-vector-milvus",
 ]
 
 [tool.pytest.ini_options]
 testpaths = ["packages"]
 python_files = ["test_*.py"]
-addopts = "-ra"
+addopts = "-ra --import-mode=importlib"
 
 [tool.ruff]
 line-length = 100

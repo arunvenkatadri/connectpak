@@ -8,7 +8,11 @@ from connectpak.core.base import (
     QueryResult,
     TableSchema,
 )
-from connectpak.core.guard import WriteOperationError, assert_read_only
+from connectpak.core.guard import (
+    WriteOperationError,
+    assert_no_write_keywords,
+    assert_read_only,
+)
 from connectpak.core.server import build_server, serve
 
 __all__ = [
@@ -19,6 +23,7 @@ __all__ = [
     "QueryResult",
     "TableSchema",
     "WriteOperationError",
+    "assert_no_write_keywords",
     "assert_read_only",
     "build_server",
     "serve",

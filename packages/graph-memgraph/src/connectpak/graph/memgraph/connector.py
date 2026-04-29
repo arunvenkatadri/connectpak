@@ -1,39 +1,16 @@
-"""Memgraph connector — stub.
+"""Memgraph connector.
 
-Every method raises NotImplementedError. Implement against the contract
-defined in `connectpak.core.base.BaseConnector` and keep the safety
-contract intact: parser guard + engine-level read-only + statement timeout
-+ row cap.
+Memgraph speaks the Bolt protocol and most of Cypher, so this is a thin
+subclass of `Neo4jConnector`. The default Bolt port is 7687, the same as
+Neo4j; pass the URI in `config`.
+
+Config: bolt://user:pass@host:7687
 """
 
 from __future__ import annotations
 
-from connectpak.core.base import BaseConnector, QueryResult, TableSchema
+from connectpak.graph.neo4j.connector import Neo4jConnector
 
 
-class MemgraphConnector(BaseConnector):
+class MemgraphConnector(Neo4jConnector):
     name = "memgraph"
-    dialect = None
-
-    def list_schemas(self) -> list[str]:
-        raise NotImplementedError("Memgraph connector is not yet implemented")
-
-    def list_tables(self, schema: str | None = None) -> list[tuple[str | None, str]]:
-        raise NotImplementedError("Memgraph connector is not yet implemented")
-
-    def describe_table(self, name: str, schema: str | None = None) -> TableSchema:
-        raise NotImplementedError("Memgraph connector is not yet implemented")
-
-    def sample_table(
-        self, name: str, schema: str | None = None, limit: int = 10
-    ) -> QueryResult:
-        raise NotImplementedError("Memgraph connector is not yet implemented")
-
-    def query(self, sql: str, max_rows: int | None = None) -> QueryResult:
-        raise NotImplementedError("Memgraph connector is not yet implemented")
-
-    def explain(self, sql: str) -> str:
-        raise NotImplementedError("Memgraph connector is not yet implemented")
-
-    def close(self) -> None:
-        return None

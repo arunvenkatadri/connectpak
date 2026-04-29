@@ -1,4 +1,4 @@
-"""Read-only SQL guard.
+"""Read-only query guards.
 
 Blocks state-mutating statements before they reach the engine. This is the
 first of two layers — the engine-level read-only mode is the second. Both
@@ -7,12 +7,14 @@ must remain intact.
 
 from __future__ import annotations
 
+import re
+
 import sqlglot
 from sqlglot import exp
 
 
 class WriteOperationError(ValueError):
-    """Raised when SQL contains any state-mutating operation."""
+    """Raised when a query contains any state-mutating operation."""
 
 
 _ALLOWED_TOP_LEVEL: tuple[type[exp.Expression], ...] = (
@@ -74,3 +76,17 @@ def assert_read_only(sql: str, dialect: str | None = None) -> None:
                 raise WriteOperationError(
                     f"forbidden operation found in SQL: {type(target).__name__}"
                 )
+
+
+def assert_no_write_keywords(text: str, keywords: tuple[str, ...]) -> None:
+    """Lightweight write-keyword check for query languages outside SQL.
+
+    Less robust than `assert_read_only`'s full AST walk: a keyword inside a
+    string literal can produce a false positive. Used for Cypher / CQL /
+    AQL / Gremlin where sqlglot does not provide a parser.
+    """
+    if text is None or not text.strip():
+        raise WriteOperationError("empty query")
+    for kw in keywords:
+        if re.search(rf"\b{re.escape(kw)}\b", text, re.IGNORECASE):
+            raise WriteOperationError(f"forbidden keyword in query: {kw}")
