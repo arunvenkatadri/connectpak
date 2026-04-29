@@ -1,0 +1,21 @@
+[project]
+name = "connectpak-vector-pgvector"
+version = "0.1.0"
+description = "pgvector connector for connectpak (stub — not yet implemented)."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+dependencies = [
+    "connectpak-core",
+    "psycopg[binary]>=3.1",
+]
+
+[project.scripts]
+connectpak-vector-pgvector = "connectpak.vector.pgvector.__main__:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/connectpak"]

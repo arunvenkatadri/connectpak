@@ -1,0 +1,21 @@
+[project]
+name = "connectpak-vector-weaviate"
+version = "0.1.0"
+description = "Weaviate connector for connectpak (stub — not yet implemented)."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+dependencies = [
+    "connectpak-core",
+    "weaviate-client>=4.6",
+]
+
+[project.scripts]
+connectpak-vector-weaviate = "connectpak.vector.weaviate.__main__:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/connectpak"]

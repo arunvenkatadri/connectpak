@@ -1,0 +1,60 @@
+[project]
+name = "connectpak-workspace"
+version = "0.1.0"
+description = "MCP-native database connectors for LLMs"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+
+[tool.uv.workspace]
+members = ["packages/*"]
+
+[tool.uv.sources]
+connectpak-core = { workspace = true }
+connectpak-sql-postgres = { workspace = true }
+connectpak-sql-mysql = { workspace = true }
+connectpak-sql-sqlite = { workspace = true }
+connectpak-sql-sqlserver = { workspace = true }
+connectpak-sql-oracle = { workspace = true }
+connectpak-sql-bigquery = { workspace = true }
+connectpak-sql-snowflake = { workspace = true }
+connectpak-sql-redshift = { workspace = true }
+connectpak-sql-databricks = { workspace = true }
+connectpak-sql-clickhouse = { workspace = true }
+connectpak-nosql-cassandra = { workspace = true }
+connectpak-nosql-elasticsearch = { workspace = true }
+connectpak-nosql-mongodb = { workspace = true }
+connectpak-nosql-dynamodb = { workspace = true }
+connectpak-graph-neo4j = { workspace = true }
+connectpak-graph-neptune = { workspace = true }
+connectpak-graph-arangodb = { workspace = true }
+connectpak-graph-memgraph = { workspace = true }
+connectpak-vector-pgvector = { workspace = true }
+connectpak-vector-pinecone = { workspace = true }
+connectpak-vector-weaviate = { workspace = true }
+connectpak-vector-qdrant = { workspace = true }
+connectpak-vector-chroma = { workspace = true }
+connectpak-vector-milvus = { workspace = true }
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.23",
+    "ruff>=0.5",
+    "connectpak-core",
+    "connectpak-sql-postgres",
+    "connectpak-sql-sqlite",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["packages"]
+python_files = ["test_*.py"]
+addopts = "-ra"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W", "B", "UP"]
+ignore = ["E501"]
