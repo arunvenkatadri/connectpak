@@ -8,7 +8,6 @@ parser guard fires before any HTTP request.
 from __future__ import annotations
 
 import pytest
-
 from connectpak.core.guard import WriteOperationError
 from connectpak.sql.clickhouse.connector import (
     ClickHouseConnector,

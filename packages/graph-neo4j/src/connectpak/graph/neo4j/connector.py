@@ -23,8 +23,6 @@ import time
 from typing import Any
 from urllib.parse import unquote, urlparse
 
-from neo4j import GraphDatabase
-
 from connectpak.core.base import (
     BaseConnector,
     Column,
@@ -33,6 +31,8 @@ from connectpak.core.base import (
     TableSchema,
 )
 from connectpak.core.guard import assert_no_write_keywords
+
+from neo4j import GraphDatabase
 
 _CYPHER_WRITE_KEYWORDS = (
     "CREATE", "MERGE", "DELETE", "REMOVE", "SET", "DROP", "DETACH",

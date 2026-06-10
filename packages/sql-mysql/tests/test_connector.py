@@ -8,7 +8,6 @@ parser guard fires *before* any connection attempt — bogus DSN, no panic.
 from __future__ import annotations
 
 import pytest
-
 from connectpak.core.guard import WriteOperationError
 from connectpak.sql.mysql.connector import MySQLConnector, _parse_dsn, _quote_ident
 

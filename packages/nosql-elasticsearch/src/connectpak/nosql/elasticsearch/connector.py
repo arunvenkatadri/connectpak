@@ -19,8 +19,6 @@ import json
 import time
 from typing import Any
 
-from elasticsearch import Elasticsearch
-
 from connectpak.core.base import (
     BaseConnector,
     Column,
@@ -28,6 +26,8 @@ from connectpak.core.base import (
     TableSchema,
 )
 from connectpak.core.guard import WriteOperationError, assert_read_only
+
+from elasticsearch import Elasticsearch
 
 _READ_OPS = {"search", "count", "sql", "esql"}
 

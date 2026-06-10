@@ -17,7 +17,6 @@ from typing import Any
 from urllib.parse import unquote, urlparse
 
 from arango import ArangoClient
-
 from connectpak.core.base import (
     BaseConnector,
     Column,
@@ -140,7 +139,7 @@ class ArangoDBConnector(BaseConnector):
         self._connection()
         start = time.perf_counter()
         cursor = self._db.aql.execute(
-            f"FOR doc IN @@coll LIMIT @limit RETURN doc",
+            "FOR doc IN @@coll LIMIT @limit RETURN doc",
             bind_vars={"@coll": name, "limit": int(limit)},
         )
         docs = list(cursor)

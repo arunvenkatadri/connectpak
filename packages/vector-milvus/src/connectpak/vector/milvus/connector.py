@@ -23,8 +23,6 @@ import time
 from typing import Any
 from urllib.parse import unquote, urlparse
 
-from pymilvus import MilvusClient
-
 from connectpak.core.base import (
     BaseConnector,
     Column,
@@ -32,6 +30,7 @@ from connectpak.core.base import (
     TableSchema,
 )
 from connectpak.core.guard import WriteOperationError
+from pymilvus import MilvusClient
 
 
 def _parse_config(config: str) -> dict[str, Any]:

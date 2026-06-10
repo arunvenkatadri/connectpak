@@ -6,8 +6,6 @@ import time
 from typing import Any
 
 import psycopg
-from psycopg import sql as pgsql
-
 from connectpak.core.base import (
     BaseConnector,
     Column,
@@ -17,6 +15,7 @@ from connectpak.core.base import (
     TableSchema,
 )
 from connectpak.core.guard import assert_read_only
+from psycopg import sql as pgsql
 
 
 class PostgresConnector(BaseConnector):

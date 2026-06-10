@@ -6,7 +6,6 @@ import sqlite3
 from pathlib import Path
 
 import pytest
-
 from connectpak.core.guard import WriteOperationError
 from connectpak.sql.sqlite.connector import SqliteConnector
 

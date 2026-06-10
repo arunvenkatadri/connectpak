@@ -26,7 +26,6 @@ import time
 from typing import Any
 
 import boto3
-
 from connectpak.core.base import (
     BaseConnector,
     Column,

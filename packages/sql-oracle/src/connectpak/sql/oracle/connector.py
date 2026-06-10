@@ -17,7 +17,6 @@ import time
 from typing import Any
 
 import oracledb
-
 from connectpak.core.base import (
     BaseConnector,
     Column,

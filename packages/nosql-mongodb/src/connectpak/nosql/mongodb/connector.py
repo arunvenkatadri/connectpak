@@ -23,7 +23,6 @@ import time
 from typing import Any
 
 import pymongo
-
 from connectpak.core.base import (
     BaseConnector,
     Column,

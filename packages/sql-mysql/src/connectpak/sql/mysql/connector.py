@@ -7,7 +7,6 @@ from typing import Any
 from urllib.parse import unquote, urlparse
 
 import pymysql
-
 from connectpak.core.base import (
     BaseConnector,
     Column,

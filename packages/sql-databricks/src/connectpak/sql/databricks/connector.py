@@ -10,8 +10,6 @@ import time
 from typing import Any
 from urllib.parse import parse_qs, unquote, urlparse
 
-from databricks import sql as dbsql
-
 from connectpak.core.base import (
     BaseConnector,
     Column,
@@ -19,6 +17,8 @@ from connectpak.core.base import (
     TableSchema,
 )
 from connectpak.core.guard import assert_read_only
+
+from databricks import sql as dbsql
 
 
 def _parse_config(config: str) -> dict[str, Any]:

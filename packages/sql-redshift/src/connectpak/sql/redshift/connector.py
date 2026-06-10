@@ -11,12 +11,10 @@ from typing import Any
 from urllib.parse import unquote, urlparse
 
 import redshift_connector
-
 from connectpak.core.base import (
     BaseConnector,
     Column,
     ForeignKey,
-    Index,
     QueryResult,
     TableSchema,
 )

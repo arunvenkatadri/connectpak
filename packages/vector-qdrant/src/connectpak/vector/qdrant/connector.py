@@ -21,8 +21,6 @@ import time
 from typing import Any
 from urllib.parse import unquote, urlparse
 
-from qdrant_client import QdrantClient
-
 from connectpak.core.base import (
     BaseConnector,
     Column,
@@ -30,6 +28,7 @@ from connectpak.core.base import (
     TableSchema,
 )
 from connectpak.core.guard import WriteOperationError
+from qdrant_client import QdrantClient
 
 
 def _parse_config(config: str) -> dict[str, Any]:

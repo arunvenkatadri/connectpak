@@ -9,7 +9,6 @@ that the parser guard fires before any connection attempt.
 from __future__ import annotations
 
 import pytest
-
 from connectpak.core.guard import WriteOperationError
 from connectpak.sql.postgres.connector import PostgresConnector
 from connectpak.vector.pgvector.connector import PgvectorConnector

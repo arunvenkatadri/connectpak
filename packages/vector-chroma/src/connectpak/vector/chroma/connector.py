@@ -22,7 +22,6 @@ from typing import Any
 from urllib.parse import urlparse
 
 import chromadb
-
 from connectpak.core.base import (
     BaseConnector,
     Column,

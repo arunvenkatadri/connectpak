@@ -14,17 +14,16 @@ import time
 from typing import Any
 from urllib.parse import parse_qs, unquote, urlparse
 
-import snowflake.connector
-
 from connectpak.core.base import (
     BaseConnector,
     Column,
     ForeignKey,
-    Index,
     QueryResult,
     TableSchema,
 )
 from connectpak.core.guard import assert_read_only
+
+import snowflake.connector
 
 
 def _parse_config(config: str) -> dict[str, Any]:

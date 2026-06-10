@@ -102,17 +102,23 @@ docstring for the accepted config / DSN format. The CLI is the same shape:
 `uv run connectpak-<track>-<engine>` reading from the matching
 `CONNECTPAK_<ENGINE>_*` env var.
 
-Wire the resulting MCP server into your client of choice.
+Wire the resulting MCP server into your client of choice — see
+`docs/clients/claude-desktop.md` and `docs/clients/cursor.md` for ready-made
+config snippets. For the JSON `query` formats accepted by the document,
+graph, and vector engines, see `docs/query-formats.md`.
 
 ## Development
 
 ```bash
 uv sync
-uv run pytest
+uv run pytest          # 156 tests across the suite
+uv run ruff check .    # lint
 ```
 
 The `sql-sqlite` package is the smallest reference implementation and the
-primary smoke-test target.
+primary smoke-test target. End-to-end MCP integration tests in
+`packages/core/tests/test_mcp_integration.py` exercise the full
+connector → FastMCP → tool-invocation path against a real SQLite fixture.
 
 ## License
 

@@ -70,7 +70,7 @@ class SqliteConnector(BaseConnector):
         # cid, name, type, notnull, dflt_value, pk
         cols: list[Column] = []
         pk: list[tuple[int, str]] = []
-        for cid, cname, ctype, notnull, default, pk_pos in info:
+        for _cid, cname, ctype, notnull, default, pk_pos in info:
             cols.append(
                 Column(
                     name=cname,

@@ -20,8 +20,6 @@ import json
 import time
 from typing import Any
 
-import weaviate
-
 from connectpak.core.base import (
     BaseConnector,
     Column,
@@ -29,6 +27,8 @@ from connectpak.core.base import (
     TableSchema,
 )
 from connectpak.core.guard import WriteOperationError
+
+import weaviate
 
 
 class WeaviateConnector(BaseConnector):

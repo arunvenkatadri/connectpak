@@ -17,10 +17,6 @@ from __future__ import annotations
 import time
 from typing import Any
 
-from gremlin_python.driver.driver_remote_connection import DriverRemoteConnection
-from gremlin_python.process.anonymous_traversal import traversal
-from gremlin_python.process.graph_traversal import __  # type: ignore[attr-defined]
-
 from connectpak.core.base import (
     BaseConnector,
     Column,
@@ -28,6 +24,8 @@ from connectpak.core.base import (
     TableSchema,
 )
 from connectpak.core.guard import assert_no_write_keywords
+from gremlin_python.driver.driver_remote_connection import DriverRemoteConnection
+from gremlin_python.process.anonymous_traversal import traversal
 
 _GREMLIN_WRITE_KEYWORDS = ("addV", "addE", "drop", "property")
 

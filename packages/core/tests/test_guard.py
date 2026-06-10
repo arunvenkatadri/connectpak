@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import pytest
-
 from connectpak.core.guard import WriteOperationError, assert_read_only
 
 ALLOWED = [

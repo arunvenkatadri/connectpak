@@ -18,8 +18,6 @@ from __future__ import annotations
 import time
 from typing import Any
 
-from google.cloud import bigquery
-
 from connectpak.core.base import (
     BaseConnector,
     Column,
@@ -28,6 +26,7 @@ from connectpak.core.base import (
     TableSchema,
 )
 from connectpak.core.guard import assert_read_only
+from google.cloud import bigquery
 
 
 class BigQueryConnector(BaseConnector):
