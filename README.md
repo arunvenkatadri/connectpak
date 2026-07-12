@@ -1,5 +1,7 @@
 # connectpak
 
+![connectpak — LLM database connector. Let LLMs talk to your databases.](docs/assets/connectpak-banner.png)
+
 **MCP-native database connectors for LLMs.** Drop into Claude Desktop, Cursor,
 Continue, ChatGPT — anything that speaks the [Model Context
 Protocol](https://modelcontextprotocol.io/). The model can list schemas,
