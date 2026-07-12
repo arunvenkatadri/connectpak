@@ -27,8 +27,13 @@ The smallest end-to-end example is `packages/sql-sqlite` — start there.
 
 A connector PR will not be merged unless all four are present:
 
-1. **Parser guard.** Call `assert_read_only(sql, dialect=self.dialect)` from
-   `query` whenever `self.allow_write` is false.
+1. **Query guard.** For SQL engines call `assert_read_only(sql,
+   dialect=self.dialect)` from `query` whenever `self.allow_write` is false.
+   For non-SQL engines either whitelist read operations in the JSON spec or
+   call `assert_no_write_keywords(text, keywords)` with the language's write
+   keywords. Any identifier you interpolate into a query string (e.g. in
+   `sample_table`) must be quoted with engine-specific escaping or
+   parameterized — never an unescaped f-string.
 2. **Engine-level read-only.** Configure the underlying driver to refuse
    writes (Postgres `default_transaction_read_only=on`, SQLite `mode=ro` URI,
    etc.). The parser guard alone is not enough.

@@ -46,16 +46,23 @@ Read-only by default. There are two independent layers, both required:
 
 1. **Parser guard** (`connectpak.core.guard.assert_read_only`) — sqlglot
    parses every query before it leaves the process. The whole AST is walked,
-   so `WITH x AS (DELETE ...) SELECT ...` style attacks are rejected.
+   so writes hiding inside an otherwise-allowed shape are rejected too:
+   `WITH x AS (DELETE ...) SELECT ...`, `SELECT ... INTO t`, row-locking
+   reads (`FOR UPDATE` / `FOR SHARE`), and mutating `PRAGMA` setters. The
+   graph and wide-column languages (Cypher, CQL, AQL, Gremlin) are screened
+   for write keywords; MongoDB additionally blocks server-side-JavaScript
+   operators (`$where`, `$function`).
 2. **Engine-level read-only** — Postgres opens with
    `default_transaction_read_only=on` and a session-level read-only
    characteristic; SQLite opens via `mode=ro` URI; other engines apply the
    equivalent setting.
 
 Plus a statement timeout (default 30s) and a row cap (default 1000) on every
-query.
+query. Identifiers passed to `sample_table` are quoted with engine-specific
+escaping (or parameterized).
 
-Pass `--allow-write` only if you really mean it.
+Pass `--allow-write` only if you really mean it, and always point the DSN at
+a read-only database role — see `SECURITY.md`.
 
 ## Quick start
 
@@ -113,7 +120,7 @@ graph, and vector engines, see `docs/query-formats.md`.
 
 ```bash
 uv sync
-uv run pytest          # 156 tests across the suite
+uv run pytest          # 177 tests across the suite
 uv run ruff check .    # lint
 ```
 

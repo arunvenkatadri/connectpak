@@ -68,3 +68,30 @@ def test_allow_write_skips_pipeline_guard() -> None:
     c = _conn()
     c.allow_write = True
     c._guard_pipeline([{"$out": "results"}])  # no raise
+
+
+def test_reject_js_operator_where() -> None:
+    from connectpak.nosql.mongodb.connector import _reject_js_operators
+
+    with pytest.raises(WriteOperationError):
+        _reject_js_operators({"$where": "sleep(10000) || true"})
+
+
+def test_reject_js_operator_nested_in_filter() -> None:
+    from connectpak.nosql.mongodb.connector import _reject_js_operators
+
+    with pytest.raises(WriteOperationError):
+        _reject_js_operators({"status": "open", "$and": [{"$where": "true"}]})
+
+
+def test_guard_pipeline_rejects_where_inside_match() -> None:
+    c = _conn()
+    with pytest.raises(WriteOperationError):
+        c._guard_pipeline([{"$match": {"$where": "this.x > 0"}}])
+
+
+def test_reject_js_operator_function() -> None:
+    from connectpak.nosql.mongodb.connector import _reject_js_operators
+
+    with pytest.raises(WriteOperationError):
+        _reject_js_operators({"$expr": {"$function": {"body": "f", "args": [], "lang": "js"}}})

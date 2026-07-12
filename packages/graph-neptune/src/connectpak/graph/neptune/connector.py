@@ -27,7 +27,15 @@ from connectpak.core.guard import assert_no_write_keywords
 from gremlin_python.driver.driver_remote_connection import DriverRemoteConnection
 from gremlin_python.process.anonymous_traversal import traversal
 
-_GREMLIN_WRITE_KEYWORDS = ("addV", "addE", "drop", "property")
+_GREMLIN_WRITE_KEYWORDS = (
+    "addV",
+    "addE",
+    "drop",
+    "property",
+    # Gremlin 3.6+ upsert steps.
+    "mergeV",
+    "mergeE",
+)
 
 
 class NeptuneConnector(BaseConnector):

@@ -33,6 +33,24 @@ from connectpak.core.guard import WriteOperationError
 
 _HIDDEN_DBS = {"admin", "local", "config"}
 _FORBIDDEN_AGG_STAGES = {"$out", "$merge", "$indexStats"}
+# Operators that execute server-side JavaScript. Even on a read they are a
+# CPU/DoS and injection vector, so they are rejected unless allow_write.
+_JS_OPERATORS = {"$where", "$function", "$accumulator"}
+
+
+def _reject_js_operators(obj: Any) -> None:
+    """Recursively reject server-side-JavaScript operators anywhere in a
+    filter, projection, or pipeline expression."""
+    if isinstance(obj, dict):
+        for k, v in obj.items():
+            if k in _JS_OPERATORS:
+                raise WriteOperationError(
+                    f"server-side JavaScript operator is not allowed: {k}"
+                )
+            _reject_js_operators(v)
+    elif isinstance(obj, list):
+        for item in obj:
+            _reject_js_operators(item)
 
 
 def _infer_type(v: Any) -> str:
@@ -129,6 +147,9 @@ class MongoDBConnector(BaseConnector):
         op = spec.get("op", "find")
         start = time.perf_counter()
         if op == "find":
+            if not self.allow_write:
+                _reject_js_operators(spec.get("filter", {}))
+                _reject_js_operators(spec.get("projection", {}))
             cursor = coll.find(spec.get("filter", {}), spec.get("projection")).limit(cap + 1)
             docs = list(cursor)
         elif op == "aggregate":
@@ -165,6 +186,8 @@ class MongoDBConnector(BaseConnector):
             for k in stage:
                 if k in _FORBIDDEN_AGG_STAGES:
                     raise WriteOperationError(f"forbidden aggregation stage: {k}")
+            # $where / $function can appear inside $match and other stages.
+            _reject_js_operators(stage)
 
     def _docs_to_result(self, docs: list[dict], elapsed_ms: float, *, truncated: bool) -> QueryResult:
         cols: list[str] = []

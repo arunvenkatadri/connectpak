@@ -29,6 +29,19 @@ from connectpak.core.guard import assert_read_only
 from google.cloud import bigquery
 
 
+def _quote_ident(name: str) -> str:
+    """Backtick-quote a BigQuery identifier component.
+
+    BigQuery does not support escaping a backtick inside a backtick-quoted
+    identifier, so an embedded backtick is rejected rather than passed
+    through — this keeps a hostile table/dataset name from breaking out of
+    the quoting in `sample_table`.
+    """
+    if "`" in name:
+        raise ValueError(f"invalid BigQuery identifier: {name!r}")
+    return f"`{name}`"
+
+
 class BigQueryConnector(BaseConnector):
     name = "bigquery"
     dialect = "bigquery"
@@ -104,7 +117,8 @@ class BigQueryConnector(BaseConnector):
     def sample_table(self, name: str, schema: str | None = None, limit: int = 10) -> QueryResult:
         if schema is None:
             raise ValueError("BigQuery sample_table requires a dataset (schema)")
-        sql = f"SELECT * FROM `{self.project}.{schema}.{name}` LIMIT {int(limit)}"
+        ref = f"{_quote_ident(self.project)}.{_quote_ident(schema)}.{_quote_ident(name)}"
+        sql = f"SELECT * FROM {ref} LIMIT {int(limit)}"
         return self._run(sql, max_rows=limit)
 
     def query(self, sql: str, max_rows: int | None = None) -> QueryResult:

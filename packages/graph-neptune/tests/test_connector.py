@@ -23,6 +23,8 @@ def _conn() -> NeptuneConnector:
         "g.V().drop()",
         "g.addE('knows').from(g.V(1)).to(g.V(2))",
         "g.V(1).property('name', 'Bob')",
+        "g.mergeV([(T.label): 'Person'])",
+        "g.mergeE([(T.label): 'knows'])",
     ],
 )
 def test_query_rejects_write_gremlin(gremlin: str) -> None:

@@ -55,3 +55,55 @@ def test_rejects_cte_with_delete() -> None:
 def test_rejects_empty_sql(sql: str) -> None:
     with pytest.raises(WriteOperationError):
         assert_read_only(sql)
+
+
+# --- Hardening regressions: writes that hide inside an allowed Select shape ---
+
+
+@pytest.mark.parametrize("dialect", ["tsql", "postgres"])
+def test_rejects_select_into(dialect: str) -> None:
+    """`SELECT ... INTO t` creates a table — a write inside a Select."""
+    with pytest.raises(WriteOperationError):
+        assert_read_only("SELECT * INTO new_table FROM users", dialect=dialect)
+
+
+def test_rejects_select_into_nested_subquery() -> None:
+    with pytest.raises(WriteOperationError):
+        assert_read_only(
+            "SELECT a INTO b FROM t WHERE id IN (SELECT id FROM other)",
+            dialect="tsql",
+        )
+
+
+@pytest.mark.parametrize("sql", ["SELECT 1 FOR UPDATE", "SELECT 1 FOR SHARE"])
+def test_rejects_locking_reads(sql: str) -> None:
+    """Row-locking selects carry write intent and can block writers."""
+    with pytest.raises(WriteOperationError):
+        assert_read_only(sql, dialect="postgres")
+
+
+@pytest.mark.parametrize(
+    "sql",
+    [
+        "PRAGMA journal_mode=WAL",
+        "PRAGMA foreign_keys=ON",
+        "PRAGMA user_version=5",
+        "PRAGMA synchronous=OFF",
+    ],
+)
+def test_rejects_mutating_pragma(sql: str) -> None:
+    with pytest.raises(WriteOperationError):
+        assert_read_only(sql, dialect="sqlite")
+
+
+@pytest.mark.parametrize(
+    "sql",
+    [
+        "PRAGMA table_info(users)",
+        "PRAGMA foreign_key_list(orders)",
+        "PRAGMA index_list(users)",
+        "PRAGMA user_version",
+    ],
+)
+def test_allows_read_pragma(sql: str) -> None:
+    assert_read_only(sql, dialect="sqlite")
