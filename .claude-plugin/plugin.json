@@ -2,7 +2,7 @@
   "name": "connectpak",
   "displayName": "connectpak",
   "version": "0.1.1",
-  "description": "Read-only access to 24 databases for AI agents over MCP: Postgres, MySQL, Snowflake, BigQuery, MongoDB, Neo4j, Pinecone, and more. List schemas, describe tables, sample rows, and run guarded queries.",
+  "description": "Skills for exploring 24 databases read-only with the open-source connectpak MCP server: Postgres, MySQL, Snowflake, BigQuery, MongoDB, Neo4j, Pinecone, and more.",
   "author": {
     "name": "connectpak contributors",
     "url": "https://github.com/arunvenkatadri/connectpak"
@@ -22,35 +22,5 @@
     "snowflake",
     "bigquery",
     "mongodb"
-  ],
-  "userConfig": {
-    "connection": {
-      "type": "string",
-      "title": "Connection string",
-      "description": "DSN, URL, path, or key for your database, e.g. postgresql://reader:pw@host:5432/app. Use read-only credentials.",
-      "sensitive": true,
-      "required": true
-    },
-    "engine": {
-      "type": "string",
-      "title": "Engine (only if not detected)",
-      "description": "Leave empty when the engine shows in the connection string. Required for: oracle, bigquery, dynamodb, elasticsearch, cassandra, memgraph, arangodb, pgvector, pinecone, weaviate, qdrant, chroma, milvus.",
-      "default": "",
-      "required": false
-    }
-  },
-  "mcpServers": {
-    "connectpak": {
-      "command": "uvx",
-      "args": [
-        "--from",
-        "${CLAUDE_PLUGIN_ROOT}/vendor/connectpak",
-        "connectpak"
-      ],
-      "env": {
-        "CLAUDE_PLUGIN_OPTION_CONNECTION": "${user_config.connection}",
-        "CLAUDE_PLUGIN_OPTION_ENGINE": "${user_config.engine}"
-      }
-    }
-  }
+  ]
 }
