@@ -1,6 +1,6 @@
 {
   "name": "connectpak",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Read-only access to 24 databases for AI agents over MCP: Postgres, MySQL, Snowflake, BigQuery, MongoDB, Neo4j, Pinecone, and more. List schemas, describe tables, sample rows, and run guarded queries.",
   "author": {
     "name": "connectpak contributors",

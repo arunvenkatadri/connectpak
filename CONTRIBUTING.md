@@ -95,7 +95,10 @@ Then add the repo as a local marketplace in either host.
 All packages share one version. Bump `version` in every `pyproject.toml`
 and the pins in `packages/connectpak/pyproject.toml`, regenerate the plugin
 (it pins `connectpak==<version>`), merge, then push a `v<version>` tag. The
-Release workflow tests, builds, and publishes every package to PyPI.
+Release workflow tests, builds, and publishes the self-contained `connectpak`
+wheel, which bundles core and every engine (see `force-include` in
+`packages/connectpak/pyproject.toml`). The per-engine `connectpak-*`
+distributions aren't on PyPI yet.
 
 ## Style
 

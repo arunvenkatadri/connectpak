@@ -4,7 +4,7 @@
       "command": "uvx",
       "args": [
         "--from",
-        "connectpak==0.1.0",
+        "connectpak==0.1.1",
         "connectpak"
       ],
       "env_vars": [

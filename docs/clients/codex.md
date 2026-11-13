@@ -19,7 +19,7 @@ the server once:
 
 ```bash
 codex mcp add connectpak --env CONNECTPAK_CONNECTION="postgresql://reader:pw@localhost:5432/app" \
-  -- uvx --from connectpak==0.1.0 connectpak
+  -- uvx --from connectpak==0.1.1 connectpak
 ```
 
 Add `--env CONNECTPAK_ENGINE=<engine>` when the engine isn't in the

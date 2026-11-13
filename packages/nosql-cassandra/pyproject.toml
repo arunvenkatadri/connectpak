@@ -1,6 +1,6 @@
 [project]
 name = "connectpak-nosql-cassandra"
-version = "0.1.0"
+version = "0.1.1"
 description = "Cassandra connector for connectpak."
 readme = "README.md"
 requires-python = ">=3.11"

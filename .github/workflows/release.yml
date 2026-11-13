@@ -1,10 +1,12 @@
 name: Release
 
-# Publishes every package (connectpak, connectpak-core, and the 24 engines)
-# to PyPI when a version tag is pushed: git tag v0.1.0 && git push origin v0.1.0
+# Publishes the self-contained `connectpak` wheel (core + all 24 engines) to
+# PyPI when a version tag is pushed: git tag v0.1.1 && git push origin v0.1.1
 #
-# Needs the repository secret PYPI_API_TOKEN (a PyPI API token; account-wide
-# for the first release, since the projects don't exist yet).
+# The per-engine connectpak-* distributions aren't published yet: PyPI limits
+# how many new projects an account can create, so they'll follow separately.
+#
+# Needs the repository secret PYPI_API_TOKEN.
 
 on:
   push:
@@ -41,7 +43,7 @@ jobs:
           uv run pytest
 
       - name: Build
-        run: uv build --all-packages -o dist
+        run: uv build --package connectpak --wheel -o dist
 
       - name: Publish to PyPI
         env:

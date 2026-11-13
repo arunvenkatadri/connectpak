@@ -93,7 +93,7 @@ The server needs a connection string, and `uv` must be on `PATH`.
 - **Claude Code:** run `/plugin`, open `connectpak`, and set **Connection
   string** (and **Engine** if it can't be detected), then restart the session.
 - **Codex:** if no connectpak tools are listed, connect the server once:
-  `codex mcp add connectpak --env CONNECTPAK_CONNECTION=<connection> -- uvx --from connectpak==0.1.0 connectpak` (add `--env CONNECTPAK_ENGINE=<engine>` when the
+  `codex mcp add connectpak --env CONNECTPAK_CONNECTION=<connection> -- uvx --from connectpak==0.1.1 connectpak` (add `--env CONNECTPAK_ENGINE=<engine>` when the
   engine isn't in the connection string), then restart Codex. If the tools
   are listed but fail, export `CONNECTPAK_CONNECTION` and restart Codex.
 

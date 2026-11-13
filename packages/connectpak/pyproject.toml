@@ -1,37 +1,35 @@
 [project]
 name = "connectpak"
-version = "0.1.0"
-description = "Read-only MCP database connectors for LLMs: one command for 24 engines (SQL, NoSQL, graph, vector)."
+version = "0.1.1"
+description = "Read-only MCP database connectors for LLMs: one self-contained package and command for 24 engines (SQL, NoSQL, graph, vector)."
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "MIT" }
 keywords = ["mcp", "llm", "database", "read-only", "claude-code", "codex"]
 dependencies = [
-    "connectpak-core==0.1.0",
-    "connectpak-graph-arangodb==0.1.0",
-    "connectpak-graph-memgraph==0.1.0",
-    "connectpak-graph-neo4j==0.1.0",
-    "connectpak-graph-neptune==0.1.0",
-    "connectpak-nosql-cassandra==0.1.0",
-    "connectpak-nosql-dynamodb==0.1.0",
-    "connectpak-nosql-elasticsearch==0.1.0",
-    "connectpak-nosql-mongodb==0.1.0",
-    "connectpak-sql-bigquery==0.1.0",
-    "connectpak-sql-clickhouse==0.1.0",
-    "connectpak-sql-databricks==0.1.0",
-    "connectpak-sql-mysql==0.1.0",
-    "connectpak-sql-oracle==0.1.0",
-    "connectpak-sql-postgres==0.1.0",
-    "connectpak-sql-redshift==0.1.0",
-    "connectpak-sql-snowflake==0.1.0",
-    "connectpak-sql-sqlite==0.1.0",
-    "connectpak-sql-sqlserver==0.1.0",
-    "connectpak-vector-chroma==0.1.0",
-    "connectpak-vector-milvus==0.1.0",
-    "connectpak-vector-pgvector==0.1.0",
-    "connectpak-vector-pinecone==0.1.0",
-    "connectpak-vector-qdrant==0.1.0",
-    "connectpak-vector-weaviate==0.1.0",
+    "boto3>=1.34",
+    "cassandra-driver>=3.29",
+    "chromadb>=0.5",
+    "clickhouse-connect>=0.7",
+    "databricks-sql-connector>=3.1",
+    "elasticsearch>=8.13",
+    "google-cloud-bigquery>=3.20",
+    "gremlinpython>=3.7",
+    "mcp>=1.0,<2",
+    "neo4j>=5.20",
+    "oracledb>=2.0",
+    "pinecone>=4.0",
+    "psycopg[binary]>=3.1",
+    "pymilvus>=2.4",
+    "pymongo>=4.7",
+    "pymssql>=2.3",
+    "PyMySQL>=1.1",
+    "python-arango>=8.0",
+    "qdrant-client>=1.9",
+    "redshift-connector>=2.1",
+    "snowflake-connector-python>=3.7",
+    "sqlglot>=23.0",
+    "weaviate-client>=4.6",
 ]
 
 [project.urls]
@@ -47,3 +45,32 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/connectpak"]
+
+[tool.hatch.build.targets.wheel.force-include]
+# The published wheel is self-contained: it bundles connectpak.core and every
+# engine, so `uvx connectpak` needs no other connectpak-* distribution.
+"../core/src/connectpak/core" = "connectpak/core"
+"../graph-arangodb/src/connectpak/graph/arangodb" = "connectpak/graph/arangodb"
+"../graph-memgraph/src/connectpak/graph/memgraph" = "connectpak/graph/memgraph"
+"../graph-neo4j/src/connectpak/graph/neo4j" = "connectpak/graph/neo4j"
+"../graph-neptune/src/connectpak/graph/neptune" = "connectpak/graph/neptune"
+"../nosql-cassandra/src/connectpak/nosql/cassandra" = "connectpak/nosql/cassandra"
+"../nosql-dynamodb/src/connectpak/nosql/dynamodb" = "connectpak/nosql/dynamodb"
+"../nosql-elasticsearch/src/connectpak/nosql/elasticsearch" = "connectpak/nosql/elasticsearch"
+"../nosql-mongodb/src/connectpak/nosql/mongodb" = "connectpak/nosql/mongodb"
+"../sql-bigquery/src/connectpak/sql/bigquery" = "connectpak/sql/bigquery"
+"../sql-clickhouse/src/connectpak/sql/clickhouse" = "connectpak/sql/clickhouse"
+"../sql-databricks/src/connectpak/sql/databricks" = "connectpak/sql/databricks"
+"../sql-mysql/src/connectpak/sql/mysql" = "connectpak/sql/mysql"
+"../sql-oracle/src/connectpak/sql/oracle" = "connectpak/sql/oracle"
+"../sql-postgres/src/connectpak/sql/postgres" = "connectpak/sql/postgres"
+"../sql-redshift/src/connectpak/sql/redshift" = "connectpak/sql/redshift"
+"../sql-snowflake/src/connectpak/sql/snowflake" = "connectpak/sql/snowflake"
+"../sql-sqlite/src/connectpak/sql/sqlite" = "connectpak/sql/sqlite"
+"../sql-sqlserver/src/connectpak/sql/sqlserver" = "connectpak/sql/sqlserver"
+"../vector-chroma/src/connectpak/vector/chroma" = "connectpak/vector/chroma"
+"../vector-milvus/src/connectpak/vector/milvus" = "connectpak/vector/milvus"
+"../vector-pgvector/src/connectpak/vector/pgvector" = "connectpak/vector/pgvector"
+"../vector-pinecone/src/connectpak/vector/pinecone" = "connectpak/vector/pinecone"
+"../vector-qdrant/src/connectpak/vector/qdrant" = "connectpak/vector/qdrant"
+"../vector-weaviate/src/connectpak/vector/weaviate" = "connectpak/vector/weaviate"

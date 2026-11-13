@@ -103,12 +103,22 @@ def test_registry_covers_every_engine_package() -> None:
     assert packages - {"core", "connectpak"} == {e.package for e in ENGINES}
 
 
-def test_meta_package_depends_on_every_engine_at_its_version() -> None:
+def test_published_wheel_is_self_contained() -> None:
+    """The connectpak wheel bundles core and every engine, and their drivers."""
     meta = tomllib.loads((PACKAGES / "connectpak" / "pyproject.toml").read_text())
-    version = meta["project"]["version"]
-    deps = set(meta["project"]["dependencies"])
-    expected = {f"connectpak-{e.package}=={version}" for e in ENGINES}
-    assert expected | {f"connectpak-core=={version}"} == deps
+    included = meta["tool"]["hatch"]["build"]["targets"]["wheel"]["force-include"]
+    expected = {"../core/src/connectpak/core": "connectpak/core"}
+    for e in ENGINES:
+        track, name = e.package.split("-", 1)
+        expected[f"../{e.package}/src/connectpak/{track}/{name}"] = f"connectpak/{track}/{name}"
+    assert included == expected
+
+    drivers = set()
+    for p in PACKAGES.glob("*/pyproject.toml"):
+        if p.parent.name != "connectpak":
+            deps = tomllib.loads(p.read_text())["project"].get("dependencies", [])
+            drivers |= {d for d in deps if not d.startswith("connectpak-")}
+    assert set(meta["project"]["dependencies"]) == drivers
 
 
 def test_launcher_serves_sqlite_end_to_end(tmp_path, monkeypatch) -> None:

@@ -57,7 +57,7 @@ standard AWS credential chain.
 
 ## What it runs, sends, and fetches
 
-- **Runs:** `uvx --from connectpak==0.1.0 connectpak`. On first start, uv
+- **Runs:** `uvx --from connectpak==0.1.1 connectpak`. On first start, uv
   downloads the `connectpak` package at that exact version, and its
   dependencies (the database drivers), from PyPI. It's cached after that.
 - **Connects to:** only the database in your connection string, using that

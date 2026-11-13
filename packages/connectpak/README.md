@@ -18,7 +18,7 @@ pgvector, Pinecone, Weaviate, Qdrant, Chroma, Milvus), set
 `CONNECTPAK_ENGINE`. If `CONNECTPAK_CONNECTION` isn't set, the engine's own
 variable (such as `CONNECTPAK_POSTGRES_DSN`) is used.
 
-To install only one engine, use its own package instead, such as
-`connectpak-sql-postgres`. See the
+The `connectpak` wheel is self-contained: it bundles every engine and its
+driver. See the
 [main README](https://github.com/arunvenkatadri/connectpak) for the safety
 model and query formats.
