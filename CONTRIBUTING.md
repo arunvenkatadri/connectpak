@@ -87,13 +87,15 @@ uv run python scripts/gen_plugins.py --check  # what CI runs
 
 `packages/connectpak/tests` fails if the registry and the packages disagree.
 
-Anthropic's directory tracks the `claude-directory` branch, not `main`. It
-holds a self-contained build of the plugin (`gen_plugins.py
---claude-directory`) that ships connectpak's source in `vendor/connectpak`,
-because the directory only accepts code it can read and rejects a
-`pyproject.toml` with `[tool.uv.sources]` above the plugin. The
-`claude-directory` workflow regenerates that branch on every push to `main`;
-don't commit to it by hand.
+Anthropic's directory tracks the `claude-directory` branch, not `main`. The
+directory accepts a local MCP server, and files other than Markdown, text,
+JSON, YAML, and images, only from Verified organizations, so that branch
+holds a skills-only build (`gen_plugins.py --claude-directory`). Its skills
+tell people to add the server with `claude mcp add`. Once the publishing
+organization is Verified, switch the workflow to `--claude-directory OUT
+--with-server`, which vendors connectpak's source and bundles the server.
+The `claude-directory` workflow regenerates the branch on every push to
+`main`; don't commit to it by hand.
 To try the plugin against unpushed changes, commit them and generate with
 `--source "file://$PWD" --ref <your-branch>` (don't commit that output).
 Then add the repo as a local marketplace in either host.

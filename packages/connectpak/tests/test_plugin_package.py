@@ -47,9 +47,25 @@ def test_directory_zip_ships_skills_without_local_mcp(tmp_path: Path) -> None:
     assert "codex mcp add connectpak" in ui["longDescription"]
 
 
-def test_claude_directory_bundle_is_self_contained() -> None:
+def test_claude_directory_default_is_skills_only() -> None:
+    """Without a Verified org, the directory refuses local servers and code files."""
     gen = _gen()
     files = gen.render_claude_directory()
+    manifest = json.loads(files[".claude-plugin/plugin.json"])
+    assert "mcpServers" not in manifest and "userConfig" not in manifest
+    allowed = (".md", ".json", ".png")
+    assert all(n.endswith(allowed) or n == "LICENSE" for n in files), sorted(files)
+    assert {f"skills/{d}/SKILL.md" for d in gen.SKILL_DIRS.values()} <= set(files)
+    readme = files["README.md"].decode()
+    assert f"uvx --from connectpak=={gen._version()} connectpak" in readme
+    assert len(readme.split()) >= 40
+    for skill in gen.SKILL_DIRS.values():
+        assert "claude mcp add connectpak" in files[f"skills/{skill}/SKILL.md"].decode()
+
+
+def test_claude_directory_bundle_with_server_is_self_contained() -> None:
+    gen = _gen()
+    files = gen.render_claude_directory(with_server=True)
     manifest = json.loads(files[".claude-plugin/plugin.json"])
     server = manifest["mcpServers"]["connectpak"]
     assert server["args"] == ["--from", "${CLAUDE_PLUGIN_ROOT}/vendor/connectpak", "connectpak"]

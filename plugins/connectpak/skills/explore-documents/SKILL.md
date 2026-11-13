@@ -90,8 +90,12 @@ for them to run themselves. Never try to work around the guard.
 
 The server needs a connection string, and `uv` must be on `PATH`.
 
-- **Claude Code:** run `/plugin`, open `connectpak`, and set **Connection
-  string** (and **Engine** if it can't be detected), then restart the session.
+- **Claude Code:** if no connectpak tools are listed, have the user add the
+  server once in a terminal: `claude mcp add connectpak --scope user -e CONNECTPAK_CONNECTION=<connection> -- uvx --from connectpak==0.1.1 connectpak` (add
+  `-e CONNECTPAK_ENGINE=<engine>` when the engine isn't in the connection
+  string), then restart Claude Code. If the plugin bundles the server but it
+  fails to start, have them run `/plugin`, open `connectpak`, and set
+  **Connection string** (and **Engine** if needed) instead.
 - **Codex:** if no connectpak tools are listed, connect the server once:
   `codex mcp add connectpak --env CONNECTPAK_CONNECTION=<connection> -- uvx --from connectpak==0.1.1 connectpak` (add `--env CONNECTPAK_ENGINE=<engine>` when the
   engine isn't in the connection string), then restart Codex. If the tools

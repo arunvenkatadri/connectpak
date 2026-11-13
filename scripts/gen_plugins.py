@@ -25,11 +25,15 @@ Run from repo root:
     python scripts/gen_plugins.py --codex-directory-zip connectpak.zip
     python scripts/gen_plugins.py --claude-directory OUT_DIR
 
-Anthropic's directory reads code it can verify, so --claude-directory writes
-a self-contained Claude-only plugin that ships connectpak's own source in
-vendor/connectpak and launches it from there. It has to live where no
-pyproject.toml sits above it (the workspace's [tool.uv.sources] reads as a
-registry redirect), so CI publishes it to the `claude-directory` branch.
+Anthropic's directory accepts a local MCP server, and any file that isn't
+Markdown, text, JSON, YAML, or an image, only from Verified organizations.
+So by default --claude-directory writes a skills-only plugin, and the skills
+tell people to add the server once with `claude mcp add`. With
+--with-server it instead writes the full plugin, which vendors connectpak's
+source and launches it from ${CLAUDE_PLUGIN_ROOT}/vendor/connectpak (for
+when the publishing organization is Verified). Either way it must live where
+no pyproject.toml sits above it, so CI publishes it to the `claude-directory`
+branch.
 
 The OpenAI Plugins Directory only accepts MCP servers on a public HTTPS
 endpoint, and connectpak's runs on the user's machine. So the directory ZIP
@@ -219,6 +223,11 @@ def codex_manifest(version: str) -> dict:
     return m
 
 
+def claude_mcp_add(version: str) -> str:
+    return (f"claude mcp add {NAME} --scope user -e CONNECTPAK_CONNECTION=<connection> "
+            f"-- uvx --from {NAME}=={version} {NAME}")
+
+
 def codex_mcp_add(version: str) -> str:
     return (f"codex mcp add {NAME} --env CONNECTPAK_CONNECTION=<connection> "
             f"-- uvx --from {NAME}=={version} {NAME}")
@@ -350,8 +359,12 @@ for them to run themselves. Never try to work around the guard.
 
 The server needs a connection string, and `uv` must be on `PATH`.
 
-- **Claude Code:** run `/plugin`, open `connectpak`, and set **Connection
-  string** (and **Engine** if it can't be detected), then restart the session.
+- **Claude Code:** if no connectpak tools are listed, have the user add the
+  server once in a terminal: `{claude_mcp_add(version)}` (add
+  `-e CONNECTPAK_ENGINE=<engine>` when the engine isn't in the connection
+  string), then restart Claude Code. If the plugin bundles the server but it
+  fails to start, have them run `/plugin`, open `connectpak`, and set
+  **Connection string** (and **Engine** if needed) instead.
 - **Codex:** if no connectpak tools are listed, connect the server once:
   `{codex_mcp_add(version)}` (add `--env CONNECTPAK_ENGINE=<engine>` when the
   engine isn't in the connection string), then restart Codex. If the tools
@@ -547,33 +560,117 @@ packages = ["src/connectpak"]
 """
 
 
-def render_claude_directory() -> dict[str, bytes]:
-    """Every file of the self-contained Claude directory plugin, by relative path."""
+def claude_skills_only_manifest(version: str) -> dict:
+    """Claude manifest with the skills only: no server, so no settings to ask for."""
+    m = claude_manifest(version)
+    m.pop("userConfig")
+    m.pop("mcpServers")
+    m["description"] = (
+        "Skills for exploring 24 databases read-only with the open-source connectpak MCP "
+        "server: Postgres, MySQL, Snowflake, BigQuery, MongoDB, Neo4j, Pinecone, and more."
+    )
+    return m
+
+
+def skills_only_readme(version: str) -> str:
+    rows = "\n".join(
+        f"| {e.display} | {'detected' if e in _detected() else f'`{e.key}`'} "
+        f"| `{e.example}` |"
+        for e in ENGINES
+    )
+    return f"""# connectpak
+
+Skills that teach Claude to explore 24 databases safely, read-only, through
+the open-source connectpak MCP server: Postgres, MySQL, Snowflake, BigQuery,
+MongoDB, Neo4j, Pinecone, and more. The agent lists schemas, reads table
+structure and relationships, samples real values, and then runs narrow,
+read-only queries in each engine's own query format.
+
+## What it includes
+
+Four skills: `explore-sql`, `explore-documents`, `explore-graph`, and
+`explore-vector`. Each covers the workflow (orient, read the schema, sample,
+query narrowly, report truncated results honestly), the query format for each
+engine in its family, and how to treat database contents as data rather than
+instructions.
+
+## Setup
+
+The skills use the connectpak MCP server, which runs on your machine. Add it
+once in a terminal ([uv](https://docs.astral.sh/uv/) must be installed):
+
+```bash
+claude mcp add connectpak --scope user -e CONNECTPAK_CONNECTION="postgresql://reader:pw@localhost:5432/app" \\
+  -- uvx --from connectpak=={version} connectpak
+```
+
+Add `-e CONNECTPAK_ENGINE=<engine>` when the engine can't be read from the
+connection string:
+
+| Database | Engine | Connection example |
+| --- | --- | --- |
+{rows}
+
+BigQuery uses Google Application Default Credentials. DynamoDB uses the
+standard AWS credential chain. Use read-only database credentials.
+
+## What it runs, sends, and fetches
+
+- **This plugin** contains only Markdown skills, a manifest, and icons. It
+  runs nothing by itself.
+- **The server you add** runs `uvx --from connectpak=={version} connectpak`.
+  On first start uv downloads that exact version of the `connectpak` package
+  and its database drivers from PyPI. Its source is at {REPO_URL}.
+- **Connects to:** only the database in your connection string, using that
+  database's official driver.
+- **Sends:** query results go to Claude in your session. connectpak has no
+  telemetry and sends data nowhere else.
+- **Stores:** nothing. `claude mcp add` keeps the connection string in your
+  Claude Code configuration.
+
+## Safety
+
+Read-only is enforced twice: by a query guard (a full SQL parse for SQL
+engines, whitelisted operations for document and vector stores, and a
+write-keyword screen for graph languages) and by the engine's own read-only
+mode. Every query has a 30-second timeout and a 1,000-row cap.
+
+Source, issues, and security reports: {REPO_URL}. MIT licensed.
+"""
+
+
+def render_claude_directory(with_server: bool = False) -> dict[str, bytes]:
+    """Every file of the Claude directory plugin, by relative path."""
     version = _version()
-    out: dict[str, bytes] = {
-        ".claude-plugin/plugin.json": _json(claude_directory_manifest(version)).encode(),
-        "README.md": readme(version, RUNS_FROM_VENDOR).encode(),
-        "LICENSE": (ROOT / "LICENSE").read_bytes(),
-        f"{VENDOR}/pyproject.toml": _vendor_pyproject(version).encode(),
-        f"{VENDOR}/README.md": (META / "README.md").read_bytes(),
-        f"{VENDOR}/LICENSE": (ROOT / "LICENSE").read_bytes(),
-    }
+    out: dict[str, bytes] = {"LICENSE": (ROOT / "LICENSE").read_bytes()}
     for family, dirname in SKILL_DIRS.items():
         out[f"skills/{dirname}/SKILL.md"] = skill(family, version).encode()
     for asset in ASSETS:
         out[asset] = (PLUGIN / asset).read_bytes()
+    if not with_server:
+        out[".claude-plugin/plugin.json"] = _json(claude_skills_only_manifest(version)).encode()
+        out["README.md"] = skills_only_readme(version).encode()
+        return out
+
+    out |= {
+        ".claude-plugin/plugin.json": _json(claude_directory_manifest(version)).encode(),
+        "README.md": readme(version, RUNS_FROM_VENDOR).encode(),
+        f"{VENDOR}/pyproject.toml": _vendor_pyproject(version).encode(),
+        f"{VENDOR}/README.md": (META / "README.md").read_bytes(),
+        f"{VENDOR}/LICENSE": (ROOT / "LICENSE").read_bytes(),
+    }
     for rel, src in _vendor_sources().items():
         out[f"{VENDOR}/src/{rel}"] = src.read_bytes()
     return out
 
 
-def write_claude_directory(out_dir: Path) -> int:
+def write_claude_directory(out_dir: Path, with_server: bool = False) -> int:
     """Replace out_dir's contents (keeping .git) with the directory plugin."""
     out_dir.mkdir(parents=True, exist_ok=True)
     for child in out_dir.iterdir():
         if child.name != ".git":
             shutil.rmtree(child) if child.is_dir() else child.unlink()
-    files = render_claude_directory()
+    files = render_claude_directory(with_server)
     for rel, content in files.items():
         path = out_dir / rel
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -606,8 +703,11 @@ def main() -> int:
     parser.add_argument("--source", help="Git URL to launch the server from (testing only).")
     parser.add_argument("--ref", help="Git ref for --source (testing only).")
     parser.add_argument("--claude-directory", type=Path, metavar="OUT_DIR",
-                        help="Write the self-contained plugin for Anthropic's directory "
+                        help="Write the plugin for Anthropic's directory: skills only "
                              "(replaces OUT_DIR's contents, keeps .git).")
+    parser.add_argument("--with-server", action="store_true",
+                        help="With --claude-directory: include the vendored server "
+                             "(needs a Verified publishing organization).")
     parser.add_argument("--codex-directory-zip", type=Path, metavar="OUT",
                         help="Build the skills-only ZIP for the OpenAI Plugins Directory.")
     args = parser.parse_args()
@@ -615,7 +715,7 @@ def main() -> int:
     _source, _ref = args.source, args.ref
 
     if args.claude_directory:
-        count = write_claude_directory(args.claude_directory)
+        count = write_claude_directory(args.claude_directory, args.with_server)
         print(f"wrote {count} files to {args.claude_directory}")
         return 0
 
