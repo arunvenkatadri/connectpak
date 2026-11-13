@@ -6,7 +6,16 @@ import argparse
 import os
 import sys
 
-from connectpak.launcher import CONNECTION_VAR, ENGINE_VAR, LaunchError, resolve, run
+from connectpak.launcher import (
+    CONNECTION_VAR,
+    ENGINE_VAR,
+    PLUGIN_CONNECTION_VAR,
+    PLUGIN_ENGINE_VAR,
+    LaunchError,
+    resolve,
+    run,
+    setting,
+)
 from connectpak.launcher.engines import ENGINES
 
 
@@ -18,10 +27,13 @@ def main() -> int:
         epilog="Other options (--max-rows, --statement-timeout-ms, ...) are passed "
                "through to the engine's own CLI.",
     )
-    parser.add_argument("--connection", default=os.environ.get(CONNECTION_VAR),
-                        help=f"Connection string (default: ${CONNECTION_VAR}).")
-    parser.add_argument("--engine", default=os.environ.get(ENGINE_VAR),
-                        help=f"Engine to use if it can't be detected (default: ${ENGINE_VAR}).")
+    env = dict(os.environ)
+    parser.add_argument(
+        "--connection", default=setting(env, CONNECTION_VAR, PLUGIN_CONNECTION_VAR),
+        help=f"Connection string (default: ${CONNECTION_VAR} or ${PLUGIN_CONNECTION_VAR}).")
+    parser.add_argument(
+        "--engine", default=setting(env, ENGINE_VAR, PLUGIN_ENGINE_VAR),
+        help=f"Engine if it can't be detected (default: ${ENGINE_VAR} or ${PLUGIN_ENGINE_VAR}).")
     parser.add_argument("--list-engines", action="store_true",
                         help="Print the supported engines and exit.")
     args, passthrough = parser.parse_known_args()
@@ -32,7 +44,7 @@ def main() -> int:
         return 0
 
     try:
-        engine, connection = resolve(args.connection, args.engine, dict(os.environ))
+        engine, connection = resolve(args.connection, args.engine, env)
     except LaunchError as exc:
         print(f"connectpak: error: {exc}", file=sys.stderr)
         return 2

@@ -15,6 +15,19 @@ from connectpak.launcher.engines import BY_KEY, ENGINES, SQLITE_SUFFIXES, Engine
 
 CONNECTION_VAR = "CONNECTPAK_CONNECTION"
 ENGINE_VAR = "CONNECTPAK_ENGINE"
+# Names Claude Code uses for a plugin's userConfig options (Anthropic's
+# directory asks plugin servers to read these).
+PLUGIN_CONNECTION_VAR = "CLAUDE_PLUGIN_OPTION_CONNECTION"
+PLUGIN_ENGINE_VAR = "CLAUDE_PLUGIN_OPTION_ENGINE"
+
+
+def setting(environ: dict[str, str], *names: str) -> str | None:
+    """The first non-empty value among the given env var names."""
+    for name in names:
+        value = environ.get(name, "").strip()
+        if value:
+            return value
+    return None
 
 
 class LaunchError(ValueError):
@@ -91,4 +104,14 @@ def run(engine: Engine, connection: str, argv: list[str]) -> int:
     return module.main()
 
 
-__all__ = ["CONNECTION_VAR", "ENGINE_VAR", "LaunchError", "detect_engine", "resolve", "run"]
+__all__ = [
+    "CONNECTION_VAR",
+    "ENGINE_VAR",
+    "PLUGIN_CONNECTION_VAR",
+    "PLUGIN_ENGINE_VAR",
+    "LaunchError",
+    "detect_engine",
+    "resolve",
+    "run",
+    "setting",
+]

@@ -141,3 +141,23 @@ def test_launcher_serves_sqlite_end_to_end(tmp_path, monkeypatch) -> None:
     assert connector.default_max_rows == 5
     with pytest.raises(Exception, match="read-only"):
         connector.query("DELETE FROM users")
+
+
+def test_launcher_reads_claude_plugin_option_names(tmp_path, monkeypatch) -> None:
+    db = tmp_path / "p.db"
+    sqlite3.connect(db).executescript("CREATE TABLE t (id INTEGER PRIMARY KEY);")
+    served = {}
+
+    import connectpak.sql.sqlite.__main__ as sqlite_main
+
+    monkeypatch.setattr(sqlite_main, "serve", lambda connector: served.update(c=connector))
+    for var in ("CONNECTPAK_CONNECTION", "CONNECTPAK_ENGINE"):
+        monkeypatch.delenv(var, raising=False)
+    monkeypatch.setenv("CLAUDE_PLUGIN_OPTION_CONNECTION", str(db))
+    monkeypatch.setenv("CLAUDE_PLUGIN_OPTION_ENGINE", "")  # empty option = auto-detect
+    monkeypatch.setattr(sys, "argv", ["connectpak"])
+
+    from connectpak.launcher.__main__ import main
+
+    assert main() == 0
+    assert served["c"].list_tables() == [("main", "t")]

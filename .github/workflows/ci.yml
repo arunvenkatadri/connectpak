@@ -2,7 +2,8 @@ name: CI
 
 on:
   push:
-    branches: ["**"]
+    # claude-directory holds only the generated plugin (see claude-directory.yml).
+    branches-ignore: ["claude-directory"]
   pull_request:
     branches: ["**"]
 

@@ -5,6 +5,7 @@ from __future__ import annotations
 import importlib.util
 import json
 import sys
+import tomllib
 import zipfile
 from pathlib import Path
 
@@ -44,3 +45,31 @@ def test_directory_zip_ships_skills_without_local_mcp(tmp_path: Path) -> None:
     for key in ("logo", "composerIcon"):
         assert ui[key].removeprefix("./") in names
     assert "codex mcp add connectpak" in ui["longDescription"]
+
+
+def test_claude_directory_bundle_is_self_contained() -> None:
+    gen = _gen()
+    files = gen.render_claude_directory()
+    manifest = json.loads(files[".claude-plugin/plugin.json"])
+    server = manifest["mcpServers"]["connectpak"]
+    assert server["args"] == ["--from", "${CLAUDE_PLUGIN_ROOT}/vendor/connectpak", "connectpak"]
+    assert set(server["env"]) == {"CLAUDE_PLUGIN_OPTION_CONNECTION",
+                                  "CLAUDE_PLUGIN_OPTION_ENGINE"}
+
+    # Only the vendored package has a pyproject, and it redirects nothing.
+    assert [n for n in files if n.endswith("pyproject.toml")] == [
+        "vendor/connectpak/pyproject.toml"
+    ]
+    vendored = tomllib.loads(files["vendor/connectpak/pyproject.toml"].decode())
+    assert "uv" not in vendored.get("tool", {})
+    assert all("==" in r for r in vendored["build-system"]["requires"])
+
+    # Claude-only: no Codex files, which forward credential env vars.
+    assert not any("codex" in n for n in files)
+
+    src = "vendor/connectpak/src/connectpak"
+    assert f"{src}/core/server.py" in files and f"{src}/launcher/__main__.py" in files
+    for e in gen.ENGINES:
+        track, name = e.package.split("-", 1)
+        assert f"{src}/{track}/{name}/connector.py" in files
+    assert not any("__pycache__" in n for n in files)

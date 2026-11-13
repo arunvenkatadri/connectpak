@@ -23,6 +23,13 @@ Run from repo root:
     python scripts/gen_plugins.py           # write files
     python scripts/gen_plugins.py --check   # exit 1 if anything is stale (CI)
     python scripts/gen_plugins.py --codex-directory-zip connectpak.zip
+    python scripts/gen_plugins.py --claude-directory OUT_DIR
+
+Anthropic's directory reads code it can verify, so --claude-directory writes
+a self-contained Claude-only plugin that ships connectpak's own source in
+vendor/connectpak and launches it from there. It has to live where no
+pyproject.toml sits above it (the workspace's [tool.uv.sources] reads as a
+registry redirect), so CI publishes it to the `claude-directory` branch.
 
 The OpenAI Plugins Directory only accepts MCP servers on a public HTTPS
 endpoint, and connectpak's runs on the user's machine. So the directory ZIP
@@ -43,6 +50,7 @@ import argparse
 import importlib.util
 import json
 import re
+import shutil
 import sys
 import tomllib
 import zipfile
@@ -354,7 +362,17 @@ in the configuration above.
 """
 
 
-def readme(version: str) -> str:
+RUNS_FROM_PYPI = """- **Runs:** `uvx --from connectpak=={version} connectpak`. On first start, uv
+  downloads the `connectpak` package at that exact version, and its
+  dependencies (the database drivers), from PyPI. It's cached after that."""
+
+RUNS_FROM_VENDOR = """- **Runs:** `uvx --from ${{CLAUDE_PLUGIN_ROOT}}/vendor/connectpak connectpak`.
+  The connectpak source (version {version}) ships in this plugin under
+  `vendor/connectpak`. On first start uv builds it and installs the database
+  drivers it lists from PyPI. It's cached after that."""
+
+
+def readme(version: str, runs: str = RUNS_FROM_PYPI) -> str:
     rows = "\n".join(
         f"| {e.display} | `{e.key}` | {'detected' if e in _detected() else 'set Engine'} "
         f"| `{e.example}` |"
@@ -396,9 +414,7 @@ standard AWS credential chain.
 
 ## What it runs, sends, and fetches
 
-- **Runs:** `uvx --from connectpak=={version} connectpak`. On first start, uv
-  downloads the `connectpak` package at that exact version, and its
-  dependencies (the database drivers), from PyPI. It's cached after that.
+{runs.format(version=version)}
 - **Connects to:** only the database in your connection string, using that
   database's official driver.
 - **Sends:** query results go to the agent in your session. connectpak has no
@@ -475,6 +491,96 @@ def _stray(files: dict[Path, str]) -> list[Path]:
     return sorted(p for p in PLUGINS.rglob("*") if p.is_file() and p not in expected)
 
 
+HATCHLING = "hatchling==1.33.0"
+VENDOR = "vendor/connectpak"
+
+
+def claude_directory_manifest(version: str) -> dict:
+    """Claude manifest that launches the vendored source, not a PyPI download."""
+    m = claude_manifest(version)
+    m["mcpServers"][NAME] = {
+        "command": "uvx",
+        "args": ["--from", f"${{CLAUDE_PLUGIN_ROOT}}/{VENDOR}", NAME],
+        "env": {
+            "CLAUDE_PLUGIN_OPTION_CONNECTION": "${user_config.connection}",
+            "CLAUDE_PLUGIN_OPTION_ENGINE": "${user_config.engine}",
+        },
+    }
+    return m
+
+
+def _vendor_sources() -> dict[str, Path]:
+    """{path inside src/: source file} for the launcher, core, and every engine."""
+    meta = tomllib.loads((META / "pyproject.toml").read_text())
+    trees = {"connectpak/launcher": META / "src" / "connectpak" / "launcher"}
+    for src, dest in meta["tool"]["hatch"]["build"]["targets"]["wheel"]["force-include"].items():
+        trees[dest] = (META / src).resolve()
+    files = {}
+    for dest, tree in sorted(trees.items()):
+        for f in sorted(tree.rglob("*.py")):
+            if "__pycache__" not in f.parts:
+                files[f"{dest}/{f.relative_to(tree).as_posix()}"] = f
+    return files
+
+
+def _vendor_pyproject(version: str) -> str:
+    meta = tomllib.loads((META / "pyproject.toml").read_text())["project"]
+    deps = "".join(f'    "{d}",\n' for d in meta["dependencies"])
+    return f"""[project]
+name = "connectpak"
+version = "{version}"
+description = "{meta['description']}"
+requires-python = "{meta['requires-python']}"
+license = {{ text = "MIT" }}
+dependencies = [
+{deps}]
+
+[project.scripts]
+connectpak = "connectpak.launcher.__main__:main"
+
+[build-system]
+requires = ["{HATCHLING}"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/connectpak"]
+"""
+
+
+def render_claude_directory() -> dict[str, bytes]:
+    """Every file of the self-contained Claude directory plugin, by relative path."""
+    version = _version()
+    out: dict[str, bytes] = {
+        ".claude-plugin/plugin.json": _json(claude_directory_manifest(version)).encode(),
+        "README.md": readme(version, RUNS_FROM_VENDOR).encode(),
+        "LICENSE": (ROOT / "LICENSE").read_bytes(),
+        f"{VENDOR}/pyproject.toml": _vendor_pyproject(version).encode(),
+        f"{VENDOR}/README.md": (META / "README.md").read_bytes(),
+        f"{VENDOR}/LICENSE": (ROOT / "LICENSE").read_bytes(),
+    }
+    for family, dirname in SKILL_DIRS.items():
+        out[f"skills/{dirname}/SKILL.md"] = skill(family, version).encode()
+    for asset in ASSETS:
+        out[asset] = (PLUGIN / asset).read_bytes()
+    for rel, src in _vendor_sources().items():
+        out[f"{VENDOR}/src/{rel}"] = src.read_bytes()
+    return out
+
+
+def write_claude_directory(out_dir: Path) -> int:
+    """Replace out_dir's contents (keeping .git) with the directory plugin."""
+    out_dir.mkdir(parents=True, exist_ok=True)
+    for child in out_dir.iterdir():
+        if child.name != ".git":
+            shutil.rmtree(child) if child.is_dir() else child.unlink()
+    files = render_claude_directory()
+    for rel, content in files.items():
+        path = out_dir / rel
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(content)
+    return len(files)
+
+
 def build_codex_directory_zip(out: Path) -> list[str]:
     """Write the skills-only ZIP for the OpenAI Plugins Directory."""
     version = _version()
@@ -499,11 +605,19 @@ def main() -> int:
                         help="Report stale or missing files instead of writing them.")
     parser.add_argument("--source", help="Git URL to launch the server from (testing only).")
     parser.add_argument("--ref", help="Git ref for --source (testing only).")
+    parser.add_argument("--claude-directory", type=Path, metavar="OUT_DIR",
+                        help="Write the self-contained plugin for Anthropic's directory "
+                             "(replaces OUT_DIR's contents, keeps .git).")
     parser.add_argument("--codex-directory-zip", type=Path, metavar="OUT",
                         help="Build the skills-only ZIP for the OpenAI Plugins Directory.")
     args = parser.parse_args()
     global _source, _ref
     _source, _ref = args.source, args.ref
+
+    if args.claude_directory:
+        count = write_claude_directory(args.claude_directory)
+        print(f"wrote {count} files to {args.claude_directory}")
+        return 0
 
     if args.codex_directory_zip:
         for name in build_codex_directory_zip(args.codex_directory_zip):

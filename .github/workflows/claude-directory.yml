@@ -1,0 +1,53 @@
+name: Claude directory branch
+
+# Keeps the `claude-directory` branch equal to the self-contained plugin that
+# Anthropic's directory tracks (scripts/gen_plugins.py --claude-directory).
+# That branch has no pyproject.toml above the plugin, which the directory
+# requires, and ships connectpak's source in vendor/ so every line that runs
+# can be reviewed.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: claude-directory
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: Check out the claude-directory branch
+        run: |
+          if git ls-remote --exit-code --heads origin claude-directory >/dev/null; then
+            git fetch origin claude-directory
+            git worktree add out origin/claude-directory -B claude-directory
+          else
+            git worktree add --orphan -b claude-directory out
+          fi
+
+      - name: Generate the plugin
+        run: uv run --no-project python scripts/gen_plugins.py --claude-directory out
+
+      - name: Commit and push if it changed
+        working-directory: out
+        run: |
+          git add -A
+          if git diff --cached --quiet; then
+            echo "claude-directory is up to date"
+            exit 0
+          fi
+          git -c user.name="github-actions[bot]" \
+              -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+              commit -m "Sync plugin from main ${GITHUB_SHA::7}"
+          git push origin claude-directory
