@@ -39,7 +39,7 @@ def test_directory_zip_ships_skills_without_local_mcp(tmp_path: Path) -> None:
     assert {f"skills/{d}/SKILL.md" for d in gen.SKILL_DIRS.values()} <= names
     ui = manifest["interface"]
     assert len(ui["shortDescription"]) <= 30
-    for key in ("websiteURL", "privacyPolicyURL", "termsOfServiceURL"):
+    for key in ("websiteURL", "supportURL", "privacyPolicyURL", "termsOfServiceURL"):
         assert ui[key].startswith("https://")
     for key in ("logo", "composerIcon"):
         assert ui[key].removeprefix("./") in names

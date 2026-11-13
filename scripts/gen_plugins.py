@@ -201,6 +201,7 @@ def codex_manifest(version: str) -> dict:
         "category": "Developer Tools",
         "capabilities": ["Read"],
         "websiteURL": REPO_URL,
+        "supportURL": f"{REPO_URL}/issues",
         "privacyPolicyURL": f"{REPO_URL}/blob/main/PRIVACY.md",
         "termsOfServiceURL": f"{REPO_URL}/blob/main/TERMS.md",
         "defaultPrompt": ["What tables are in my database, and how do they relate?"],
