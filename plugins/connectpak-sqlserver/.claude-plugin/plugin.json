@@ -1,0 +1,43 @@
+{
+  "name": "connectpak-sqlserver",
+  "version": "0.1.0",
+  "description": "Read-only SQL Server access for AI agents over MCP: list schemas, describe tables, sample rows, and run guarded queries.",
+  "author": {
+    "name": "connectpak contributors",
+    "url": "https://github.com/arunvenkatadri/connectpak"
+  },
+  "homepage": "https://github.com/arunvenkatadri/connectpak",
+  "repository": "https://github.com/arunvenkatadri/connectpak",
+  "license": "MIT",
+  "keywords": [
+    "mcp",
+    "database",
+    "read-only",
+    "sql",
+    "sqlserver",
+    "mssql",
+    "tsql"
+  ],
+  "userConfig": {
+    "connection": {
+      "type": "string",
+      "title": "SQL Server DSN",
+      "description": "Passed to the server as $CONNECTPAK_SQLSERVER_DSN. Example: mssql://reader:pw@db.example.com:1433/app. Use read-only credentials.",
+      "sensitive": true,
+      "required": true
+    }
+  },
+  "mcpServers": {
+    "sqlserver": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/arunvenkatadri/connectpak#subdirectory=packages/sql-sqlserver",
+        "connectpak-sql-sqlserver"
+      ],
+      "env": {
+        "CONNECTPAK_SQLSERVER_DSN": "${user_config.connection}"
+      }
+    }
+  }
+}

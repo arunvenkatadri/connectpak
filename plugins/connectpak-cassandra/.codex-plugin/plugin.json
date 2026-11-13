@@ -1,0 +1,36 @@
+{
+  "name": "connectpak-cassandra",
+  "version": "0.1.0",
+  "description": "Read-only Cassandra access for AI agents over MCP: list schemas, describe tables, sample rows, and run guarded queries.",
+  "author": {
+    "name": "connectpak contributors",
+    "url": "https://github.com/arunvenkatadri/connectpak"
+  },
+  "homepage": "https://github.com/arunvenkatadri/connectpak",
+  "repository": "https://github.com/arunvenkatadri/connectpak",
+  "license": "MIT",
+  "keywords": [
+    "mcp",
+    "database",
+    "read-only",
+    "nosql",
+    "cassandra",
+    "cql"
+  ],
+  "skills": "./skills/",
+  "mcpServers": "./codex.mcp.json",
+  "interface": {
+    "displayName": "connectpak · Cassandra",
+    "shortDescription": "Read-only Cassandra access over MCP",
+    "longDescription": "Read-only Cassandra access for AI agents over MCP: list schemas, describe tables, sample rows, and run guarded queries. Set $CONNECTPAK_CASSANDRA_HOSTS in your environment before starting Codex. Writes are rejected by a parser guard and by the engine's own read-only mode; every query has a timeout and a row cap.",
+    "developerName": "connectpak",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Read"
+    ],
+    "websiteURL": "https://github.com/arunvenkatadri/connectpak",
+    "defaultPrompt": [
+      "What tables are in my Cassandra database?"
+    ]
+  }
+}

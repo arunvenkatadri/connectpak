@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "mongodb": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/arunvenkatadri/connectpak#subdirectory=packages/nosql-mongodb",
+        "connectpak-nosql-mongodb"
+      ],
+      "env_vars": [
+        "CONNECTPAK_MONGODB_URI"
+      ]
+    }
+  }
+}

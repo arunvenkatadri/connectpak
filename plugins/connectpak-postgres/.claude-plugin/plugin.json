@@ -1,0 +1,41 @@
+{
+  "name": "connectpak-postgres",
+  "version": "0.1.0",
+  "description": "Read-only Postgres access for AI agents over MCP: list schemas, describe tables, sample rows, and run guarded queries.",
+  "author": {
+    "name": "connectpak contributors",
+    "url": "https://github.com/arunvenkatadri/connectpak"
+  },
+  "homepage": "https://github.com/arunvenkatadri/connectpak",
+  "repository": "https://github.com/arunvenkatadri/connectpak",
+  "license": "MIT",
+  "keywords": [
+    "mcp",
+    "database",
+    "read-only",
+    "sql",
+    "postgres"
+  ],
+  "userConfig": {
+    "connection": {
+      "type": "string",
+      "title": "Postgres DSN",
+      "description": "Passed to the server as $CONNECTPAK_POSTGRES_DSN. Example: postgresql://reader:pw@db.example.com:5432/app. Use read-only credentials.",
+      "sensitive": true,
+      "required": true
+    }
+  },
+  "mcpServers": {
+    "postgres": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/arunvenkatadri/connectpak#subdirectory=packages/sql-postgres",
+        "connectpak-sql-postgres"
+      ],
+      "env": {
+        "CONNECTPAK_POSTGRES_DSN": "${user_config.connection}"
+      }
+    }
+  }
+}

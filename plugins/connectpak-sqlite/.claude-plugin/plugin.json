@@ -1,0 +1,41 @@
+{
+  "name": "connectpak-sqlite",
+  "version": "0.1.0",
+  "description": "Read-only SQLite access for AI agents over MCP: list schemas, describe tables, sample rows, and run guarded queries.",
+  "author": {
+    "name": "connectpak contributors",
+    "url": "https://github.com/arunvenkatadri/connectpak"
+  },
+  "homepage": "https://github.com/arunvenkatadri/connectpak",
+  "repository": "https://github.com/arunvenkatadri/connectpak",
+  "license": "MIT",
+  "keywords": [
+    "mcp",
+    "database",
+    "read-only",
+    "sql",
+    "sqlite"
+  ],
+  "userConfig": {
+    "connection": {
+      "type": "string",
+      "title": "SQLite database path",
+      "description": "Passed to the server as $CONNECTPAK_SQLITE_PATH. Example: /Users/me/data/analytics.sqlite. Use read-only credentials.",
+      "sensitive": false,
+      "required": true
+    }
+  },
+  "mcpServers": {
+    "sqlite": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/arunvenkatadri/connectpak#subdirectory=packages/sql-sqlite",
+        "connectpak-sql-sqlite"
+      ],
+      "env": {
+        "CONNECTPAK_SQLITE_PATH": "${user_config.connection}"
+      }
+    }
+  }
+}

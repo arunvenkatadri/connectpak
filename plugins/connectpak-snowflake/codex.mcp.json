@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "snowflake": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/arunvenkatadri/connectpak#subdirectory=packages/sql-snowflake",
+        "connectpak-sql-snowflake"
+      ],
+      "env_vars": [
+        "CONNECTPAK_SNOWFLAKE_DSN"
+      ]
+    }
+  }
+}

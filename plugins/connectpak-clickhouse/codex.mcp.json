@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "clickhouse": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/arunvenkatadri/connectpak#subdirectory=packages/sql-clickhouse",
+        "connectpak-sql-clickhouse"
+      ],
+      "env_vars": [
+        "CONNECTPAK_CLICKHOUSE_DSN"
+      ]
+    }
+  }
+}

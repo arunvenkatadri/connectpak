@@ -1,0 +1,42 @@
+{
+  "name": "connectpak-bigquery",
+  "version": "0.1.0",
+  "description": "Read-only BigQuery access for AI agents over MCP: list schemas, describe tables, sample rows, and run guarded queries.",
+  "author": {
+    "name": "connectpak contributors",
+    "url": "https://github.com/arunvenkatadri/connectpak"
+  },
+  "homepage": "https://github.com/arunvenkatadri/connectpak",
+  "repository": "https://github.com/arunvenkatadri/connectpak",
+  "license": "MIT",
+  "keywords": [
+    "mcp",
+    "database",
+    "read-only",
+    "sql",
+    "bigquery",
+    "gcp"
+  ],
+  "userConfig": {
+    "connection": {
+      "type": "string",
+      "title": "GCP project ID",
+      "description": "Passed to the server as $CONNECTPAK_BIGQUERY_PROJECT. Example: my-gcp-project. Use read-only credentials.",
+      "sensitive": false,
+      "required": true
+    }
+  },
+  "mcpServers": {
+    "bigquery": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/arunvenkatadri/connectpak#subdirectory=packages/sql-bigquery",
+        "connectpak-sql-bigquery"
+      ],
+      "env": {
+        "CONNECTPAK_BIGQUERY_PROJECT": "${user_config.connection}"
+      }
+    }
+  }
+}

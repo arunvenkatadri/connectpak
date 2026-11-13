@@ -1,0 +1,41 @@
+{
+  "name": "connectpak-oracle",
+  "version": "0.1.0",
+  "description": "Read-only Oracle access for AI agents over MCP: list schemas, describe tables, sample rows, and run guarded queries.",
+  "author": {
+    "name": "connectpak contributors",
+    "url": "https://github.com/arunvenkatadri/connectpak"
+  },
+  "homepage": "https://github.com/arunvenkatadri/connectpak",
+  "repository": "https://github.com/arunvenkatadri/connectpak",
+  "license": "MIT",
+  "keywords": [
+    "mcp",
+    "database",
+    "read-only",
+    "sql",
+    "oracle"
+  ],
+  "userConfig": {
+    "connection": {
+      "type": "string",
+      "title": "Oracle connect string",
+      "description": "Passed to the server as $CONNECTPAK_ORACLE_DSN. Example: reader/pw@db.example.com:1521/ORCLPDB1. Use read-only credentials.",
+      "sensitive": true,
+      "required": true
+    }
+  },
+  "mcpServers": {
+    "oracle": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/arunvenkatadri/connectpak#subdirectory=packages/sql-oracle",
+        "connectpak-sql-oracle"
+      ],
+      "env": {
+        "CONNECTPAK_ORACLE_DSN": "${user_config.connection}"
+      }
+    }
+  }
+}

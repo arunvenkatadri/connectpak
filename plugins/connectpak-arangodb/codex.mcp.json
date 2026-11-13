@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "arangodb": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/arunvenkatadri/connectpak#subdirectory=packages/graph-arangodb",
+        "connectpak-graph-arangodb"
+      ],
+      "env_vars": [
+        "CONNECTPAK_ARANGODB_URL"
+      ]
+    }
+  }
+}

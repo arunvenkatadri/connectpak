@@ -1,0 +1,296 @@
+{
+  "name": "connectpak",
+  "interface": {
+    "displayName": "connectpak database connectors"
+  },
+  "plugins": [
+    {
+      "name": "connectpak-postgres",
+      "source": {
+        "source": "local",
+        "path": "./plugins/connectpak-postgres"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    },
+    {
+      "name": "connectpak-sqlite",
+      "source": {
+        "source": "local",
+        "path": "./plugins/connectpak-sqlite"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    },
+    {
+      "name": "connectpak-mysql",
+      "source": {
+        "source": "local",
+        "path": "./plugins/connectpak-mysql"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    },
+    {
+      "name": "connectpak-clickhouse",
+      "source": {
+        "source": "local",
+        "path": "./plugins/connectpak-clickhouse"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    },
+    {
+      "name": "connectpak-sqlserver",
+      "source": {
+        "source": "local",
+        "path": "./plugins/connectpak-sqlserver"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    },
+    {
+      "name": "connectpak-oracle",
+      "source": {
+        "source": "local",
+        "path": "./plugins/connectpak-oracle"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    },
+    {
+      "name": "connectpak-bigquery",
+      "source": {
+        "source": "local",
+        "path": "./plugins/connectpak-bigquery"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    },
+    {
+      "name": "connectpak-snowflake",
+      "source": {
+        "source": "local",
+        "path": "./plugins/connectpak-snowflake"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    },
+    {
+      "name": "connectpak-redshift",
+      "source": {
+        "source": "local",
+        "path": "./plugins/connectpak-redshift"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    },
+    {
+      "name": "connectpak-databricks",
+      "source": {
+        "source": "local",
+        "path": "./plugins/connectpak-databricks"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    },
+    {
+      "name": "connectpak-mongodb",
+      "source": {
+        "source": "local",
+        "path": "./plugins/connectpak-mongodb"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    },
+    {
+      "name": "connectpak-dynamodb",
+      "source": {
+        "source": "local",
+        "path": "./plugins/connectpak-dynamodb"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    },
+    {
+      "name": "connectpak-elasticsearch",
+      "source": {
+        "source": "local",
+        "path": "./plugins/connectpak-elasticsearch"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    },
+    {
+      "name": "connectpak-cassandra",
+      "source": {
+        "source": "local",
+        "path": "./plugins/connectpak-cassandra"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    },
+    {
+      "name": "connectpak-neo4j",
+      "source": {
+        "source": "local",
+        "path": "./plugins/connectpak-neo4j"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    },
+    {
+      "name": "connectpak-memgraph",
+      "source": {
+        "source": "local",
+        "path": "./plugins/connectpak-memgraph"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    },
+    {
+      "name": "connectpak-arangodb",
+      "source": {
+        "source": "local",
+        "path": "./plugins/connectpak-arangodb"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    },
+    {
+      "name": "connectpak-neptune",
+      "source": {
+        "source": "local",
+        "path": "./plugins/connectpak-neptune"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    },
+    {
+      "name": "connectpak-pgvector",
+      "source": {
+        "source": "local",
+        "path": "./plugins/connectpak-pgvector"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    },
+    {
+      "name": "connectpak-pinecone",
+      "source": {
+        "source": "local",
+        "path": "./plugins/connectpak-pinecone"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    },
+    {
+      "name": "connectpak-weaviate",
+      "source": {
+        "source": "local",
+        "path": "./plugins/connectpak-weaviate"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    },
+    {
+      "name": "connectpak-qdrant",
+      "source": {
+        "source": "local",
+        "path": "./plugins/connectpak-qdrant"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    },
+    {
+      "name": "connectpak-chroma",
+      "source": {
+        "source": "local",
+        "path": "./plugins/connectpak-chroma"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    },
+    {
+      "name": "connectpak-milvus",
+      "source": {
+        "source": "local",
+        "path": "./plugins/connectpak-milvus"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    }
+  ]
+}

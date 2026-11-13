@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "elasticsearch": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/arunvenkatadri/connectpak#subdirectory=packages/nosql-elasticsearch",
+        "connectpak-nosql-elasticsearch"
+      ],
+      "env_vars": [
+        "CONNECTPAK_ELASTICSEARCH_URL"
+      ]
+    }
+  }
+}

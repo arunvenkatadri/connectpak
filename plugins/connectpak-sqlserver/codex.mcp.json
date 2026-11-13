@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "sqlserver": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/arunvenkatadri/connectpak#subdirectory=packages/sql-sqlserver",
+        "connectpak-sql-sqlserver"
+      ],
+      "env_vars": [
+        "CONNECTPAK_SQLSERVER_DSN"
+      ]
+    }
+  }
+}

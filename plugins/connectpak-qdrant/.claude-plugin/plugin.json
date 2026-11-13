@@ -1,0 +1,41 @@
+{
+  "name": "connectpak-qdrant",
+  "version": "0.1.0",
+  "description": "Read-only Qdrant access for AI agents over MCP: list schemas, describe tables, sample rows, and run guarded queries.",
+  "author": {
+    "name": "connectpak contributors",
+    "url": "https://github.com/arunvenkatadri/connectpak"
+  },
+  "homepage": "https://github.com/arunvenkatadri/connectpak",
+  "repository": "https://github.com/arunvenkatadri/connectpak",
+  "license": "MIT",
+  "keywords": [
+    "mcp",
+    "database",
+    "read-only",
+    "vector",
+    "qdrant"
+  ],
+  "userConfig": {
+    "connection": {
+      "type": "string",
+      "title": "Qdrant URL",
+      "description": "Passed to the server as $CONNECTPAK_QDRANT_URL. Example: https://api-key@my-cluster.qdrant.io. Use read-only credentials.",
+      "sensitive": true,
+      "required": true
+    }
+  },
+  "mcpServers": {
+    "qdrant": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/arunvenkatadri/connectpak#subdirectory=packages/vector-qdrant",
+        "connectpak-vector-qdrant"
+      ],
+      "env": {
+        "CONNECTPAK_QDRANT_URL": "${user_config.connection}"
+      }
+    }
+  }
+}

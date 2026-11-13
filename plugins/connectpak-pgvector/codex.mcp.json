@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "pgvector": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/arunvenkatadri/connectpak#subdirectory=packages/vector-pgvector",
+        "connectpak-vector-pgvector"
+      ],
+      "env_vars": [
+        "CONNECTPAK_PGVECTOR_DSN"
+      ]
+    }
+  }
+}

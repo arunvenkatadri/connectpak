@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "oracle": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/arunvenkatadri/connectpak#subdirectory=packages/sql-oracle",
+        "connectpak-sql-oracle"
+      ],
+      "env_vars": [
+        "CONNECTPAK_ORACLE_DSN"
+      ]
+    }
+  }
+}

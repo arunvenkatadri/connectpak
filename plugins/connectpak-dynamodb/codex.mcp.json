@@ -1,0 +1,23 @@
+{
+  "mcpServers": {
+    "dynamodb": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/arunvenkatadri/connectpak#subdirectory=packages/nosql-dynamodb",
+        "connectpak-nosql-dynamodb"
+      ],
+      "env_vars": [
+        "CONNECTPAK_DYNAMODB_REGION",
+        "AWS_PROFILE",
+        "AWS_REGION",
+        "AWS_DEFAULT_REGION",
+        "AWS_ACCESS_KEY_ID",
+        "AWS_SECRET_ACCESS_KEY",
+        "AWS_SESSION_TOKEN",
+        "AWS_CONFIG_FILE",
+        "AWS_SHARED_CREDENTIALS_FILE"
+      ]
+    }
+  }
+}

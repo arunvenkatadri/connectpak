@@ -1,0 +1,41 @@
+{
+  "name": "connectpak-snowflake",
+  "version": "0.1.0",
+  "description": "Read-only Snowflake access for AI agents over MCP: list schemas, describe tables, sample rows, and run guarded queries.",
+  "author": {
+    "name": "connectpak contributors",
+    "url": "https://github.com/arunvenkatadri/connectpak"
+  },
+  "homepage": "https://github.com/arunvenkatadri/connectpak",
+  "repository": "https://github.com/arunvenkatadri/connectpak",
+  "license": "MIT",
+  "keywords": [
+    "mcp",
+    "database",
+    "read-only",
+    "sql",
+    "snowflake"
+  ],
+  "userConfig": {
+    "connection": {
+      "type": "string",
+      "title": "Snowflake DSN",
+      "description": "Passed to the server as $CONNECTPAK_SNOWFLAKE_DSN. Example: snowflake://user:pw@account/db/schema?warehouse=WH&role=READONLY. Use read-only credentials.",
+      "sensitive": true,
+      "required": true
+    }
+  },
+  "mcpServers": {
+    "snowflake": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/arunvenkatadri/connectpak#subdirectory=packages/sql-snowflake",
+        "connectpak-sql-snowflake"
+      ],
+      "env": {
+        "CONNECTPAK_SNOWFLAKE_DSN": "${user_config.connection}"
+      }
+    }
+  }
+}

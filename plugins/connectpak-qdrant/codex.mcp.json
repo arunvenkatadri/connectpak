@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "qdrant": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/arunvenkatadri/connectpak#subdirectory=packages/vector-qdrant",
+        "connectpak-vector-qdrant"
+      ],
+      "env_vars": [
+        "CONNECTPAK_QDRANT_URL"
+      ]
+    }
+  }
+}

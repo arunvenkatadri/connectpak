@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "pinecone": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/arunvenkatadri/connectpak#subdirectory=packages/vector-pinecone",
+        "connectpak-vector-pinecone"
+      ],
+      "env_vars": [
+        "CONNECTPAK_PINECONE_API_KEY"
+      ]
+    }
+  }
+}

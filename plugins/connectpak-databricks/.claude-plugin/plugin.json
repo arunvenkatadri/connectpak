@@ -1,0 +1,41 @@
+{
+  "name": "connectpak-databricks",
+  "version": "0.1.0",
+  "description": "Read-only Databricks access for AI agents over MCP: list schemas, describe tables, sample rows, and run guarded queries.",
+  "author": {
+    "name": "connectpak contributors",
+    "url": "https://github.com/arunvenkatadri/connectpak"
+  },
+  "homepage": "https://github.com/arunvenkatadri/connectpak",
+  "repository": "https://github.com/arunvenkatadri/connectpak",
+  "license": "MIT",
+  "keywords": [
+    "mcp",
+    "database",
+    "read-only",
+    "sql",
+    "databricks"
+  ],
+  "userConfig": {
+    "connection": {
+      "type": "string",
+      "title": "Databricks DSN",
+      "description": "Passed to the server as $CONNECTPAK_DATABRICKS_DSN. Example: databricks://token:dapi-xxxxx@host.cloud.databricks.com?http_path=/sql/1.0/.... Use read-only credentials.",
+      "sensitive": true,
+      "required": true
+    }
+  },
+  "mcpServers": {
+    "databricks": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/arunvenkatadri/connectpak#subdirectory=packages/sql-databricks",
+        "connectpak-sql-databricks"
+      ],
+      "env": {
+        "CONNECTPAK_DATABRICKS_DSN": "${user_config.connection}"
+      }
+    }
+  }
+}
