@@ -53,7 +53,7 @@ class PostgresConnector(BaseConnector):
             SELECT schema_name
             FROM information_schema.schemata
             WHERE schema_name NOT IN ('pg_catalog', 'information_schema', 'pg_toast')
-              AND schema_name NOT LIKE 'pg_%'
+              AND schema_name NOT LIKE 'pg\\_%'
             ORDER BY schema_name
         """
         with self._connection().cursor() as cur:
@@ -67,10 +67,12 @@ class PostgresConnector(BaseConnector):
                 FROM information_schema.tables
                 WHERE table_type IN ('BASE TABLE', 'VIEW')
                   AND table_schema NOT IN ('pg_catalog', 'information_schema', 'pg_toast')
-                  AND table_schema NOT LIKE 'pg_%'
+                  AND table_schema NOT LIKE 'pg\\_%'
                 ORDER BY table_schema, table_name
             """
-            params: tuple = ()
+            # None, not (): with any params psycopg parses `%` as a placeholder,
+            # which breaks the LIKE pattern above.
+            params: tuple | None = None
         else:
             sql = """
                 SELECT table_schema, table_name

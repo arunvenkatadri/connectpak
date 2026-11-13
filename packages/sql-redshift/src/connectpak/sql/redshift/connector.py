@@ -73,7 +73,7 @@ class RedshiftConnector(BaseConnector):
         sql = (
             "SELECT schema_name FROM information_schema.schemata "
             "WHERE schema_name NOT IN ('pg_catalog','information_schema','pg_toast') "
-            "AND schema_name NOT LIKE 'pg_%' ORDER BY schema_name"
+            "AND schema_name NOT LIKE 'pg\\_%' ORDER BY schema_name"
         )
         with self._connection().cursor() as cur:
             cur.execute(sql)
