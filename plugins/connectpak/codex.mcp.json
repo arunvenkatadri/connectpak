@@ -1,0 +1,51 @@
+{
+  "mcpServers": {
+    "connectpak": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "connectpak==0.1.0",
+        "connectpak"
+      ],
+      "env_vars": [
+        "CONNECTPAK_CONNECTION",
+        "CONNECTPAK_ENGINE",
+        "CONNECTPAK_POSTGRES_DSN",
+        "CONNECTPAK_SQLITE_PATH",
+        "CONNECTPAK_MYSQL_DSN",
+        "CONNECTPAK_CLICKHOUSE_DSN",
+        "CONNECTPAK_SQLSERVER_DSN",
+        "CONNECTPAK_ORACLE_DSN",
+        "CONNECTPAK_BIGQUERY_PROJECT",
+        "GOOGLE_APPLICATION_CREDENTIALS",
+        "GOOGLE_CLOUD_PROJECT",
+        "CLOUDSDK_CONFIG",
+        "CONNECTPAK_SNOWFLAKE_DSN",
+        "CONNECTPAK_REDSHIFT_DSN",
+        "CONNECTPAK_DATABRICKS_DSN",
+        "CONNECTPAK_MONGODB_URI",
+        "CONNECTPAK_DYNAMODB_REGION",
+        "AWS_PROFILE",
+        "AWS_REGION",
+        "AWS_DEFAULT_REGION",
+        "AWS_ACCESS_KEY_ID",
+        "AWS_SECRET_ACCESS_KEY",
+        "AWS_SESSION_TOKEN",
+        "AWS_CONFIG_FILE",
+        "AWS_SHARED_CREDENTIALS_FILE",
+        "CONNECTPAK_ELASTICSEARCH_URL",
+        "CONNECTPAK_CASSANDRA_HOSTS",
+        "CONNECTPAK_NEO4J_URI",
+        "CONNECTPAK_MEMGRAPH_URI",
+        "CONNECTPAK_ARANGODB_URL",
+        "CONNECTPAK_NEPTUNE_URL",
+        "CONNECTPAK_PGVECTOR_DSN",
+        "CONNECTPAK_PINECONE_API_KEY",
+        "CONNECTPAK_WEAVIATE_URL",
+        "CONNECTPAK_QDRANT_URL",
+        "CONNECTPAK_CHROMA_URL",
+        "CONNECTPAK_MILVUS_URI"
+      ]
+    }
+  }
+}

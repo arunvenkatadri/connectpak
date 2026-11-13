@@ -1,0 +1,56 @@
+{
+  "name": "connectpak",
+  "displayName": "connectpak",
+  "version": "0.1.0",
+  "description": "Read-only access to 24 databases for AI agents over MCP: Postgres, MySQL, Snowflake, BigQuery, MongoDB, Neo4j, Pinecone, and more. List schemas, describe tables, sample rows, and run guarded queries.",
+  "author": {
+    "name": "connectpak contributors",
+    "url": "https://github.com/arunvenkatadri/connectpak"
+  },
+  "homepage": "https://github.com/arunvenkatadri/connectpak",
+  "repository": "https://github.com/arunvenkatadri/connectpak",
+  "license": "MIT",
+  "keywords": [
+    "mcp",
+    "database",
+    "read-only",
+    "sql",
+    "nosql",
+    "graph",
+    "vector",
+    "postgres",
+    "snowflake",
+    "bigquery",
+    "mongodb"
+  ],
+  "userConfig": {
+    "connection": {
+      "type": "string",
+      "title": "Connection string",
+      "description": "DSN, URL, path, or key for your database, e.g. postgresql://reader:pw@host:5432/app. Use read-only credentials.",
+      "sensitive": true,
+      "required": true
+    },
+    "engine": {
+      "type": "string",
+      "title": "Engine (only if not detected)",
+      "description": "Leave empty when the engine shows in the connection string. Required for: oracle, bigquery, dynamodb, elasticsearch, cassandra, memgraph, arangodb, pgvector, pinecone, weaviate, qdrant, chroma, milvus.",
+      "default": "",
+      "required": false
+    }
+  },
+  "mcpServers": {
+    "connectpak": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "connectpak==0.1.0",
+        "connectpak"
+      ],
+      "env": {
+        "CONNECTPAK_CONNECTION": "${user_config.connection}",
+        "CONNECTPAK_ENGINE": "${user_config.engine}"
+      }
+    }
+  }
+}

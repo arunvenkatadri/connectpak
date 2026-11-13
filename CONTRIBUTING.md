@@ -66,23 +66,36 @@ uv sync
 uv run pytest
 ```
 
-## Plugins
+## Engine registry and plugin
+
+`packages/connectpak/src/connectpak/launcher/engines.py` lists every engine:
+its package, connection env var, URL schemes, and example. The `connectpak`
+launcher and the plugin generator both read it. When you add an engine:
+
+1. Add it to `ENGINES` in that file.
+2. Add the package to `dependencies` in `packages/connectpak/pyproject.toml`,
+   pinned to the release version.
+3. Regenerate the plugin.
 
 `plugins/` and both marketplace files (`.claude-plugin/marketplace.json`,
-`.agents/plugins/marketplace.json`) are generated. Don't edit them by hand.
-When you add an engine, or change its CLI's env var, update the `ENGINES`
-table in `scripts/gen_plugins.py` and regenerate:
+`.agents/plugins/marketplace.json`) are generated. Don't edit them by hand:
 
 ```bash
 uv run python scripts/gen_plugins.py          # write
 uv run python scripts/gen_plugins.py --check  # what CI runs
 ```
 
-`--check` also fails if a package is missing from `ENGINES`, or if a CLI no
-longer reads the env var the plugin sets. To try plugins against unpushed
-connector changes, commit them and generate with
+`packages/connectpak/tests` fails if the registry and the packages disagree.
+To try the plugin against unpushed changes, commit them and generate with
 `--source "file://$PWD" --ref <your-branch>` (don't commit that output).
 Then add the repo as a local marketplace in either host.
+
+## Releasing
+
+All packages share one version. Bump `version` in every `pyproject.toml`
+and the pins in `packages/connectpak/pyproject.toml`, regenerate the plugin
+(it pins `connectpak==<version>`), merge, then push a `v<version>` tag. The
+Release workflow tests, builds, and publishes every package to PyPI.
 
 ## Style
 

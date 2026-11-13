@@ -64,40 +64,42 @@ escaping (or parameterized).
 Pass `--allow-write` only if you really mean it, and always point the DSN at
 a read-only database role — see `SECURITY.md`.
 
-## Claude Code and Codex plugins
+## Claude Code and Codex plugin
 
-Every engine also ships as a plugin for [Claude Code](https://code.claude.com)
-and [Codex](https://developers.openai.com/codex). A plugin bundles the
-engine's MCP server, launched with `uvx`, so there's nothing to clone or
-install by hand. It also includes an `explore-<engine>` skill that teaches the
-agent a safe workflow: orient, read the schema, sample, then query narrowly.
-You only need [uv](https://docs.astral.sh/uv/) on your `PATH`.
+connectpak ships as one plugin for [Claude Code](https://code.claude.com) and
+[Codex](https://developers.openai.com/codex) that covers all 24 engines. Its
+MCP server is the `connectpak` command, launched with `uvx` from PyPI, so
+there's nothing to clone or install by hand. It reads the engine from the
+connection string (`postgresql://…`, `snowflake://…`, `mongodb+srv://…`) or
+from an explicit engine setting. Four skills teach the agent a safe workflow
+and each engine's query format: `explore-sql`, `explore-documents`,
+`explore-graph`, and `explore-vector`. You only need
+[uv](https://docs.astral.sh/uv/) on your `PATH`.
 
 **Claude Code**
 
 ```text
 /plugin marketplace add arunvenkatadri/connectpak
-/plugin install connectpak-postgres@connectpak
+/plugin install connectpak@connectpak
 ```
 
-Claude Code prompts for the connection string when the plugin is enabled and
-keeps it in your OS credential store. Details:
+Claude Code asks for the connection string (stored in your OS credential
+store), and for the engine only when it can't be detected. Details:
 [docs/clients/claude-code.md](docs/clients/claude-code.md).
 
 **Codex**
 
 ```bash
 codex plugin marketplace add arunvenkatadri/connectpak
-codex plugin add connectpak-postgres@connectpak
-export CONNECTPAK_POSTGRES_DSN="postgresql://reader:pw@localhost:5432/app"
+codex plugin add connectpak@connectpak
+export CONNECTPAK_CONNECTION="postgresql://reader:pw@localhost:5432/app"
 ```
 
-Codex passes the `CONNECTPAK_*` variable through from your shell. Details:
-[docs/clients/codex.md](docs/clients/codex.md).
+Details: [docs/clients/codex.md](docs/clients/codex.md).
 
-Plugin names are `connectpak-<engine>` (`connectpak-snowflake`,
-`connectpak-neo4j`, `connectpak-qdrant`, …). The plugins never pass
-`--allow-write`, so they are always read-only.
+The plugin never passes `--allow-write`, so it is always read-only. The same
+`connectpak` command works anywhere MCP does:
+`CONNECTPAK_CONNECTION=... uvx connectpak`.
 
 ## Quick start
 

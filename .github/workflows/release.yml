@@ -1,0 +1,56 @@
+name: Release
+
+# Publishes every package (connectpak, connectpak-core, and the 24 engines)
+# to PyPI when a version tag is pushed: git tag v0.1.0 && git push origin v0.1.0
+#
+# Needs the repository secret PYPI_API_TOKEN (a PyPI API token; account-wide
+# for the first release, since the projects don't exist yet).
+
+on:
+  push:
+    tags: ["v*"]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: pypi
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: Check the tag matches every package version
+        run: |
+          tag="${GITHUB_REF_NAME#v}"
+          bad=0
+          for f in pyproject.toml packages/*/pyproject.toml; do
+            v=$(grep -m1 '^version' "$f" | cut -d'"' -f2)
+            if [ "$v" != "$tag" ]; then echo "::error file=$f::version $v != tag $tag"; bad=1; fi
+          done
+          exit $bad
+
+      - name: Check the plugin pins this version
+        run: |
+          uv run --no-project python scripts/gen_plugins.py --check
+          grep -q "connectpak==${GITHUB_REF_NAME#v}" plugins/connectpak/.claude-plugin/plugin.json
+
+      - name: Test
+        run: |
+          uv sync
+          uv run pytest
+
+      - name: Build
+        run: uv build --all-packages -o dist
+
+      - name: Publish to PyPI
+        env:
+          UV_PUBLISH_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
+        # --check-url skips files already on PyPI, so a re-run after a partial
+        # upload finishes the job instead of failing.
+        run: uv publish --check-url https://pypi.org/simple/ dist/*
+
+      - name: Smoke-test the published plugin command
+        run: |
+          sleep 30  # let the PyPI index catch up
+          uvx --refresh --from "connectpak==${GITHUB_REF_NAME#v}" connectpak --list-engines
