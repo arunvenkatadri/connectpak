@@ -1,4 +1,4 @@
-"""Redshift connector for connectpak (stub)."""
+"""Redshift connector for connectpak."""
 
 from connectpak.sql.redshift.connector import RedshiftConnector
 

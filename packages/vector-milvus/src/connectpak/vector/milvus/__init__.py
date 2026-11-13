@@ -1,4 +1,4 @@
-"""Milvus connector for connectpak (stub)."""
+"""Milvus connector for connectpak."""
 
 from connectpak.vector.milvus.connector import MilvusConnector
 

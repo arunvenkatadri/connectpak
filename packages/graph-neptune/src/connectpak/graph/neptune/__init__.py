@@ -1,4 +1,4 @@
-"""Neptune connector for connectpak (stub)."""
+"""Neptune connector for connectpak."""
 
 from connectpak.graph.neptune.connector import NeptuneConnector
 

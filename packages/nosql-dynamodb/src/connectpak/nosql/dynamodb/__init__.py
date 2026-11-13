@@ -1,4 +1,4 @@
-"""DynamoDB connector for connectpak (stub)."""
+"""DynamoDB connector for connectpak."""
 
 from connectpak.nosql.dynamodb.connector import DynamoDBConnector
 

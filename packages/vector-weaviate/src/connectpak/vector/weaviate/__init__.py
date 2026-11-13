@@ -1,4 +1,4 @@
-"""Weaviate connector for connectpak (stub)."""
+"""Weaviate connector for connectpak."""
 
 from connectpak.vector.weaviate.connector import WeaviateConnector
 

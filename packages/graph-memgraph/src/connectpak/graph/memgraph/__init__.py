@@ -1,4 +1,4 @@
-"""Memgraph connector for connectpak (stub)."""
+"""Memgraph connector for connectpak."""
 
 from connectpak.graph.memgraph.connector import MemgraphConnector
 

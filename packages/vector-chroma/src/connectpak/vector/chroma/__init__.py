@@ -1,4 +1,4 @@
-"""Chroma connector for connectpak (stub)."""
+"""Chroma connector for connectpak."""
 
 from connectpak.vector.chroma.connector import ChromaConnector
 

@@ -1,4 +1,4 @@
-"""Snowflake connector for connectpak (stub)."""
+"""Snowflake connector for connectpak."""
 
 from connectpak.sql.snowflake.connector import SnowflakeConnector
 

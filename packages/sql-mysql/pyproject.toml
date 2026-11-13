@@ -1,7 +1,7 @@
 [project]
 name = "connectpak-sql-mysql"
 version = "0.1.0"
-description = "MySQL connector for connectpak (stub — not yet implemented)."
+description = "MySQL connector for connectpak."
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "MIT" }

@@ -1,4 +1,4 @@
-"""ClickHouse connector for connectpak (stub)."""
+"""ClickHouse connector for connectpak."""
 
 from connectpak.sql.clickhouse.connector import ClickHouseConnector
 

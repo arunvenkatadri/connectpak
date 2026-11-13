@@ -1,4 +1,4 @@
-"""Qdrant connector for connectpak (stub)."""
+"""Qdrant connector for connectpak."""
 
 from connectpak.vector.qdrant.connector import QdrantConnector
 

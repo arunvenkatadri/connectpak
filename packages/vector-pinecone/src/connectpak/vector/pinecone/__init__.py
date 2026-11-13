@@ -1,4 +1,4 @@
-"""Pinecone connector for connectpak (stub)."""
+"""Pinecone connector for connectpak."""
 
 from connectpak.vector.pinecone.connector import PineconeConnector
 

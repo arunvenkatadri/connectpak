@@ -1,4 +1,4 @@
-"""Elasticsearch connector for connectpak (stub)."""
+"""Elasticsearch connector for connectpak."""
 
 from connectpak.nosql.elasticsearch.connector import ElasticsearchConnector
 

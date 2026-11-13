@@ -1,4 +1,4 @@
-"""Neo4j connector for connectpak (stub)."""
+"""Neo4j connector for connectpak."""
 
 from connectpak.graph.neo4j.connector import Neo4jConnector
 

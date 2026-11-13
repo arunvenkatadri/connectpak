@@ -1,4 +1,4 @@
-"""Oracle connector for connectpak (stub)."""
+"""Oracle connector for connectpak."""
 
 from connectpak.sql.oracle.connector import OracleConnector
 

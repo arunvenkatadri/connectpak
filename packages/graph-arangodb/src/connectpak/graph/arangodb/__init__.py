@@ -1,4 +1,4 @@
-"""ArangoDB connector for connectpak (stub)."""
+"""ArangoDB connector for connectpak."""
 
 from connectpak.graph.arangodb.connector import ArangoDBConnector
 

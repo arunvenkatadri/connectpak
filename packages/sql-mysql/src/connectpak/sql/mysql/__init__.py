@@ -1,4 +1,4 @@
-"""MySQL connector for connectpak (stub)."""
+"""MySQL connector for connectpak."""
 
 from connectpak.sql.mysql.connector import MySQLConnector
 

@@ -1,4 +1,4 @@
-"""Databricks connector for connectpak (stub)."""
+"""Databricks connector for connectpak."""
 
 from connectpak.sql.databricks.connector import DatabricksConnector
 

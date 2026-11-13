@@ -1,4 +1,4 @@
-"""MongoDB connector for connectpak (stub)."""
+"""MongoDB connector for connectpak."""
 
 from connectpak.nosql.mongodb.connector import MongoDBConnector
 

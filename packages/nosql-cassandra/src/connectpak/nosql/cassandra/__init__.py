@@ -1,4 +1,4 @@
-"""Cassandra connector for connectpak (stub)."""
+"""Cassandra connector for connectpak."""
 
 from connectpak.nosql.cassandra.connector import CassandraConnector
 

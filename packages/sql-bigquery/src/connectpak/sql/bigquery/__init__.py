@@ -1,4 +1,4 @@
-"""BigQuery connector for connectpak (stub)."""
+"""BigQuery connector for connectpak."""
 
 from connectpak.sql.bigquery.connector import BigQueryConnector
 

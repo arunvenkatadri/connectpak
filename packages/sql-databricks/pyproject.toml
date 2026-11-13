@@ -1,7 +1,7 @@
 [project]
 name = "connectpak-sql-databricks"
 version = "0.1.0"
-description = "Databricks connector for connectpak (stub — not yet implemented)."
+description = "Databricks connector for connectpak."
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "MIT" }
