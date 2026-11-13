@@ -64,6 +64,41 @@ escaping (or parameterized).
 Pass `--allow-write` only if you really mean it, and always point the DSN at
 a read-only database role — see `SECURITY.md`.
 
+## Claude Code and Codex plugins
+
+Every engine also ships as a plugin for [Claude Code](https://code.claude.com)
+and [Codex](https://developers.openai.com/codex). A plugin bundles the
+engine's MCP server, launched with `uvx`, so there's nothing to clone or
+install by hand. It also includes an `explore-<engine>` skill that teaches the
+agent a safe workflow: orient, read the schema, sample, then query narrowly.
+You only need [uv](https://docs.astral.sh/uv/) on your `PATH`.
+
+**Claude Code**
+
+```text
+/plugin marketplace add arunvenkatadri/connectpak
+/plugin install connectpak-postgres@connectpak
+```
+
+Claude Code prompts for the connection string when the plugin is enabled and
+keeps it in your OS credential store. Details:
+[docs/clients/claude-code.md](docs/clients/claude-code.md).
+
+**Codex**
+
+```bash
+codex plugin marketplace add arunvenkatadri/connectpak
+codex plugin add connectpak-postgres@connectpak
+export CONNECTPAK_POSTGRES_DSN="postgresql://reader:pw@localhost:5432/app"
+```
+
+Codex passes the `CONNECTPAK_*` variable through from your shell. Details:
+[docs/clients/codex.md](docs/clients/codex.md).
+
+Plugin names are `connectpak-<engine>` (`connectpak-snowflake`,
+`connectpak-neo4j`, `connectpak-qdrant`, …). The plugins never pass
+`--allow-write`, so they are always read-only.
+
 ## Quick start
 
 ### Postgres
@@ -112,7 +147,7 @@ docstring for the accepted config / DSN format. The CLI is the same shape:
 `CONNECTPAK_<ENGINE>_*` env var.
 
 Wire the resulting MCP server into your client of choice — see
-`docs/clients/claude-desktop.md` and `docs/clients/cursor.md` for ready-made
+`docs/clients/` (Claude Desktop, Cursor, Claude Code, Codex) for ready-made
 config snippets. For the JSON `query` formats accepted by the document,
 graph, and vector engines, see `docs/query-formats.md`.
 

@@ -66,6 +66,24 @@ uv sync
 uv run pytest
 ```
 
+## Plugins
+
+`plugins/` and both marketplace files (`.claude-plugin/marketplace.json`,
+`.agents/plugins/marketplace.json`) are generated. Don't edit them by hand.
+When you add an engine, or change its CLI's env var, update the `ENGINES`
+table in `scripts/gen_plugins.py` and regenerate:
+
+```bash
+uv run python scripts/gen_plugins.py          # write
+uv run python scripts/gen_plugins.py --check  # what CI runs
+```
+
+`--check` also fails if a package is missing from `ENGINES`, or if a CLI no
+longer reads the env var the plugin sets. To try plugins against unpushed
+connector changes, commit them and generate with
+`--source "file://$PWD" --ref <your-branch>` (don't commit that output).
+Then add the repo as a local marketplace in either host.
+
 ## Style
 
 `ruff check` should pass. Keep public APIs typed.

@@ -28,7 +28,10 @@ jobs:
         run: uv sync
 
       - name: Lint (ruff)
-        run: uv run ruff check packages
+        run: uv run ruff check packages scripts
+
+      - name: Plugins up to date
+        run: uv run python scripts/gen_plugins.py --check
 
       - name: Test (pytest)
         run: uv run pytest
