@@ -23,12 +23,30 @@ def _to_jsonable(obj: Any) -> Any:
     return obj
 
 
-def build_server(connector: BaseConnector, server_name: str | None = None):
+def default_instructions(connector: BaseConnector) -> str:
+    """Server instructions telling the client which engine is behind the tools."""
+    language = (
+        f"SQL in the {connector.dialect} dialect"
+        if connector.dialect
+        else "the engine's native query format (see its connector docs)"
+    )
+    return (
+        f"connectpak {connector.name} connector. The `query` tool takes {language}. "
+        "This connection is read-only: writes are rejected by a parser guard and by "
+        "the engine's own read-only mode, and every query has a timeout and a row cap."
+    )
+
+
+def build_server(
+    connector: BaseConnector,
+    server_name: str | None = None,
+    instructions: str | None = None,
+):
     """Build a FastMCP server registering six tools wrapping the connector."""
     from mcp.server.fastmcp import FastMCP
 
     name = server_name or f"connectpak-{connector.name}"
-    mcp = FastMCP(name)
+    mcp = FastMCP(name, instructions=instructions or default_instructions(connector))
 
     @mcp.tool()
     def list_schemas() -> list[str]:

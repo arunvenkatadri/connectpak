@@ -153,3 +153,9 @@ async def test_mcp_query_truncation_signal(server) -> None:
     out = _payload(result)
     assert out["row_count"] == 2
     assert out["truncated"] is True
+
+
+def test_server_instructions_name_the_engine(server) -> None:
+    text = server.instructions
+    assert "sqlite" in text
+    assert "read-only" in text
